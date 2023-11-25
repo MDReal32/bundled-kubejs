@@ -1,0 +1,25 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "kube-js/*"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "watch": "vite build --watch"
+  },
+  "devDependencies": {
+    "@kubejs/plugin": "workspace:^",
+    "@trivago/prettier-plugin-sort-imports": "4.3.0",
+    "@types/node": "20.10.0",
+    "prettier": "3.1.0",
+    "prettier-plugin-packagejson": "2.4.6",
+    "typescript": "5.2.2",
+    "vite": "5.0.0"
+  },
+  "packageManager": "yarn@4.0.2"
+}
