@@ -1,0 +1,38 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["/lang/*.json"],
+      "url": "./.vscode/probe.lang-schema.json"
+    },
+    {
+      "fileMatch": ["/probe/docs/*.json"],
+      "url": "./.vscode/probe.doc-schema.json"
+    }
+  ],
+  "files.exclude": {
+    ".idea": true,
+    ".yarn": true,
+    "config": true,
+    "defaultconfigs": true,
+    "downloads": true,
+    "kube-js/plugin/build": true,
+    "logs": true,
+    "mods": true,
+    "resourcepacks": true,
+    "saves": true,
+    "shaderpacks": true,
+    "minecraftinstance.json": true,
+    "rhino.local.properties": true,
+    "user*cache.json": true,
+    "options.txt": true,
+    ".curse*": true,
+    ".next": true,
+    "**/__pycache__": true,
+    "**/.classpath": true,
+    "**/.factorypath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/node_modules": true,
+    "venv": true
+  }
+}

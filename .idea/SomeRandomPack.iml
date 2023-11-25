@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/.vscode" />
+      <excludeFolder url="file://$MODULE_DIR$/.yarn" />
+      <excludeFolder url="file://$MODULE_DIR$/config" />
+      <excludeFolder url="file://$MODULE_DIR$/defaultconfigs" />
+      <excludeFolder url="file://$MODULE_DIR$/downloads" />
+      <excludeFolder url="file://$MODULE_DIR$/kube-js/plugin/build" />
+      <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/mods" />
+      <excludeFolder url="file://$MODULE_DIR$/resourcepacks" />
+      <excludeFolder url="file://$MODULE_DIR$/saves" />
+      <excludeFolder url="file://$MODULE_DIR$/shaderpacks" />
+      <excludePattern pattern="minecraftinstance.json" />
+      <excludePattern pattern="rhino.local.properties" />
+      <excludePattern pattern="user*cache.json" />
+      <excludePattern pattern="options.txt" />
+      <excludePattern pattern=".curse*" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
