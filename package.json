@@ -8,8 +8,6 @@
   ],
   "scripts": {
     "build": "vite build",
-    "dev": "vite",
-    "preview": "vite preview",
     "watch": "vite build --watch"
   },
   "devDependencies": {
