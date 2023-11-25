@@ -1,0 +1,23 @@
+{
+  "name": "@kubejs/plugin",
+  "version": "0.0.0",
+  "description": "A KubeJS plugin",
+  "type": "module",
+  "main": "build/main.js",
+  "types": "build/main.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch"
+  },
+  "dependencies": {
+    "lodash": "4.17.21",
+    "vite-plugin-dts": "3.6.3"
+  },
+  "devDependencies": {
+    "@types/lodash": "4"
+  },
+  "dependencis": {
+    "typescript": "5.3.2",
+    "vite": "5.0.2"
+  }
+}
