@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/plugin",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A KubeJS plugin",
   "type": "module",
   "main": "build/main.js",
@@ -8,8 +8,19 @@
   "bin": {
     "kubejs": "bin/cli.js"
   },
+  "files": [
+    "build",
+    "bin",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "probe.d.ts",
+    "tsconfig.json"
+  ],
   "scripts": {
     "build": "vite build",
+    "prepublishOnly": "yarn build",
+    "publish:me": "npm publish --access public",
     "watch": "vite build --watch"
   },
   "dependencies": {
