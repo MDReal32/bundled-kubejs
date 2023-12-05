@@ -1,3 +1,5 @@
+name: Check actual version
+
 on:
   pull_request:
 
