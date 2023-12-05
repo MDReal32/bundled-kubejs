@@ -1,1 +1,1 @@
-export { default as vite, defineConfig as defineViteConfig } from "./vite";
+export { default as vite } from "./plugin/vite-plugin";

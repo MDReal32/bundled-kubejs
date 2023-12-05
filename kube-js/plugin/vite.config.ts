@@ -1,29 +1,13 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
+import pkgJson from "./package.json";
+
 const external = [
   /^node:/,
-  /^fs(\/promises)?$/,
-  "path",
-  "util",
-  "events",
-  "stream",
-  "assert",
-  "buffer",
-  "crypto",
-  /^https?$/,
-  "os",
-  "querystring",
-  "string_decoder",
-  "tty",
-  "url",
-  "zlib",
-  "tls",
-  "module",
-  "net",
-  "child_process",
-  "worker_threads",
-  "fsevents"
+  "yargs/helpers",
+  ...Object.keys(pkgJson.dependencies || {}),
+  ...Object.keys(pkgJson.devDependencies || {})
 ];
 
 export default defineConfig({
@@ -31,18 +15,19 @@ export default defineConfig({
     outDir: "build",
     lib: {
       name: "KubeJS/Plugin",
-      entry: { main: "src/main.ts" },
-      fileName: "main",
+      entry: { main: "src/main.ts", cli: "src/cli.ts" },
+      fileName: "[name].js",
       formats: ["es"]
     },
     rollupOptions: {
       output: {
-        chunkFileNames: "[name].js",
-        assetFileNames: "[name][extname]"
+        entryFileNames: "[name].js",
+        chunkFileNames: "chunks/[name].js",
+        assetFileNames: "assets/[name][extname]"
       },
-
       external
-    }
+    },
+    sourcemap: true
   },
-  plugins: [dts()]
+  plugins: [dts({})]
 });
