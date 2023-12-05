@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+      - run: corepack enable
+      - run: cp README.md kube-js/plugin/README.md
+      - run: yarn
+      - run: yarn prepare
+      # publish to npm kube-js/plugin
+      - run: yarn publish:plugin
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

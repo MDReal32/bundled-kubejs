@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "build": "kubejs build",
+    "dev:act": "gh act --secret-file .env",
     "prepare": "yarn workspace @kubejs/plugin build",
+    "publish:plugin": "yarn workspace @kubejs/plugin publish:me",
     "watch": "kubejs build --watch"
   },
   "devDependencies": {
