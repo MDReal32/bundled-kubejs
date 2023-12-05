@@ -1,0 +1,16 @@
+on:
+  pull_request:
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          PACKAGE_NAME=$(jq -r '.name' < kube-js/plugin/package.json)
+          CURRENT_VERSION=$(jq -r '.version' < kube-js/plugin/package.json)
+          VERSIONS=$(npm view $PACKAGE_NAME --json | jq -r '.versions')
+          if [[ $VERSIONS == *"$CURRENT_VERSION"* ]]; then
+            echo "Version $CURRENT_VERSION already exists"
+            exit 1
+          fi
