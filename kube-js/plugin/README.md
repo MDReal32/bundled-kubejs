@@ -35,10 +35,18 @@ Add these scripts to your `package.json` file.
 }
 ```
 
+Add that typing to `vite` environment file (`vite-env.d.ts`).
+```typescript
+/// <reference types="@kubejs/plugin/probe.d.ts" />
+```
+
 Now you can run `npm run build` or `yarn build` to build your scripts for production.  
 Or you can run `npm run watch` or `yarn watch` to start development statement.
 
-You can add additional buildable config in `vite.config.ts`. But in my opinion I made everything which I can. After that you can start writing your scripts in `src` directory, and it will automatically will be built into kubejs/*_scripts directories depends on entry file. You can find more information about `KubeJS` mod in [here](https://kubejs.latvian.dev/).
+You can add additional buildable config in `vite.config.ts`.
+But in my opinion I made everything which I can.
+After that you can start writing your scripts in `src` directory, and it will automatically will be built into kubejs/*_scripts directories depends on entry file.
+You can find more information about `KubeJS` mod in [here](https://kubejs.latvian.dev/).
 
 # File Structure
 Here have 3 entry points for `vite` build.
