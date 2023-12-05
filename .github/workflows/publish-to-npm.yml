@@ -15,7 +15,6 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
       - run: corepack enable
-      - run: cp README.md kube-js/plugin/README.md
       - run: yarn
       - run: yarn prepare
       # publish to npm kube-js/plugin

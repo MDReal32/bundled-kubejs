@@ -12,6 +12,7 @@
     "build",
     "bin",
     "README.md",
+    "LICENSE",
     "package.json",
     "probe.d.ts",
     "tsconfig.json"
