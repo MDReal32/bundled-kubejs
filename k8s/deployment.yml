@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubejs-server
+  labels:
+    app: kubejs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubejs-server
+  template:
+    metadata:
+      labels:
+        app: kubejs-server
+    spec:
+      containers:
+        - name: kubejs-server
+          image: "ghcr.io/MDReal32/cf-server:latest"
+      imagePullSecrets:
+        - name: ghcr-mdreal32

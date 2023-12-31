@@ -26,7 +26,3 @@ If you have any idea, or you want to contribute to this project please open an i
 
 # Contact
 You can contact with me via [Discord](https://discordapp.com/users/673855981473628201) or [LinkedIn](https://www.linkedin.com/in/mdrealiyev)
-
-# Known problems
-
-- [ ] [#3](https://github.com/MDReal32/bundled-kubejs/issues/3): When building project vite generates common chunks.

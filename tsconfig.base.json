@@ -15,12 +15,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Project */
-    "baseUrl": "./",
-    "paths": {
-      "@kubejs/core": ["./kubejs/main.ts"],
-      "@kubejs/plugin": ["./kubejs/plugin.ts"],
-      "@kubejs/plugin/vite": ["./kubejs/plugin/vite.ts"]
-    }
+    "removeComments": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "sourceMap": true
   }
 }

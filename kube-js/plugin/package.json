@@ -2,6 +2,11 @@
   "name": "@kubejs/plugin",
   "version": "1.0.0",
   "description": "A KubeJS plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MDReal32/bundled-kubejs.git",
+    "directory": "kube-js/plugin"
+  },
   "type": "module",
   "main": "build/main.js",
   "types": "build/main.d.ts",
@@ -25,7 +30,6 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "vite-plugin-dts": "3.6.4",
     "yargs": "17.7.2"
   },
   "devDependencies": {
@@ -33,10 +37,10 @@
     "@types/node": "20.10.3",
     "@types/yargs": "17.0.32",
     "typescript": "5.3.2",
-    "vite": "5.0.5"
+    "vite": "5.0.5",
+    "vite-plugin-dts": "3.6.4"
   },
-  "dependencis": {
-    "typescript": "5.3.2",
-    "vite": "5.0.2"
+  "peerDependencies": {
+    "vite": ">=5"
   }
 }

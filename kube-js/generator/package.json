@@ -1,0 +1,53 @@
+{
+  "name": "@kubejs/generator",
+  "version": "1.0.0",
+  "description": "A generator for KubeJS plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MDReal32/bundled-kubejs.git",
+    "directory": "kube-js/generator"
+  },
+  "type": "module",
+  "main": "build/main.js",
+  "types": "build/main.d.ts",
+  "bin": {
+    "kubejs": "bin/cli.js"
+  },
+  "files": [],
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "yarn build",
+    "publish:me": "npm publish --access public",
+    "start:dev": "nodemon build/main.js -- -n sample-project -v 1.0.0 -m 1.18.2 -t forge -p sample-project",
+    "watch": "vite build --watch"
+  },
+  "dependencies": {
+    "archiver": "^6.0.1",
+    "ejs": "3.1.9",
+    "electron": "^28.1.0",
+    "inquirer": "^9.2.12",
+    "lodash": "^4.17.21",
+    "memfs": "^4.6.0",
+    "reflect-metadata": "^0.1.14",
+    "simple-git": "^3.21.0",
+    "temp-dir": "^3.0.0",
+    "yaml": "^2.3.4",
+    "yargs": "17.7.2",
+    "yarn": "^1.22.21",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6",
+    "@types/ejs": "^3",
+    "@types/inquirer": "^9",
+    "@types/lodash": "^4",
+    "@types/node": "^20.10.3",
+    "@types/yargs": "17.0.32",
+    "concurrently": "8.2.2",
+    "nodemon": "^3.0.2",
+    "typescript": "5.3.2",
+    "vite": "5.0.5",
+    "vite-plugin-dts": "3.6.4"
+  },
+  "packageManager": "yarn@4.0.2"
+}
