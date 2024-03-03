@@ -5,6 +5,8 @@ import pkgJson from "./package.json";
 
 const external = [
   /^node:/,
+  "fs",
+  "path",
   "yargs/helpers",
   ...Object.keys(pkgJson.dependencies || {}),
   ...Object.keys(pkgJson.devDependencies || {})

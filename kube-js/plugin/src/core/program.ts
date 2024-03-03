@@ -4,6 +4,8 @@ import { dirname, resolve } from "node:path";
 
 import { UserConfig, UserConfigExport, build } from "vite";
 
+import babel from "@rollup/plugin-babel";
+
 import { __dirname } from "../const";
 
 type Entry = "client" | "server" | "startup";
@@ -18,11 +20,11 @@ enum AppState {
 }
 
 export class Program<TCmdOptions extends string | number, TArgs> {
-  private appStates = {
+  private appStates: Record<Entry, AppState> = {
     client: AppState.INITIALIZING,
     server: AppState.INITIALIZING,
     startup: AppState.INITIALIZING
-  } as Record<Entry, AppState>;
+  };
 
   constructor(
     public cmd: TCmdOptions,
@@ -68,7 +70,16 @@ export class Program<TCmdOptions extends string | number, TArgs> {
             entry: entryFile,
             formats: ["es"]
           },
-          minify: "esbuild"
+          minify: "esbuild",
+          chunkSizeWarningLimit: Infinity,
+          rollupOptions: {
+            plugins: [
+              babel({
+                babelHelpers: "bundled",
+                presets: [["@babel/preset-env", { targets: { browsers: ["ie >= 11"] } }]]
+              })
+            ]
+          }
         },
         logLevel: "silent"
       };
