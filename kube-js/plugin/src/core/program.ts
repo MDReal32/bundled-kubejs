@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { mkdir, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, writeFile, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 import { UserConfig, UserConfigExport, build } from "vite";
@@ -30,7 +30,48 @@ export class Program<TCmdOptions extends string | number, TArgs> {
     public cmd: TCmdOptions,
     public options: TCmdOptions[],
     public args: TArgs
-  ) {}
+  ) { }
+
+  async patch() {
+    // Patch the output scripts due to rhino made the var scoped
+    const outputs = ["client", "server", "startup"].map(env => resolve(`kubejs/${env}_scripts/script.js`));
+
+    // Load the file and split the lines
+    const promises = outputs.map(async file => {
+      const content = await readFile(file, "utf-8");
+      const lines = content.split("\n");
+
+      // function l() {
+      //   try {
+      //     var e = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+      //     }));
+      //   } catch (t) {
+      //   }
+      //   return (l = function() {
+      //     return !!e;
+      //   })();
+      // }
+
+      // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+      const problemIndex = lines.findIndex(line => line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {"));
+
+      // If not found, skip
+      if (problemIndex === -1) return;
+
+      const fnStart = problemIndex - 1;
+      const fnEnd = problemIndex + 6;
+
+      // We know that we are not in a reflective environment, so we patch the function to simply return false
+      const right = "return false;";
+
+      // Replace the content
+      lines.splice(fnStart, fnEnd - fnStart, right);
+      // Write the file
+      await writeFile(file, lines.join("\n"));
+    });
+
+    await Promise.all(promises);
+  }
 
   async build() {
     this.log();
@@ -71,10 +112,12 @@ export class Program<TCmdOptions extends string | number, TArgs> {
             formats: ["es"]
           },
           minify: "esbuild",
+          target: "es2018",
           chunkSizeWarningLimit: Infinity,
           rollupOptions: {
             plugins: [
               babel({
+                extensions: [".js", ".ts"],
                 babelHelpers: "bundled",
                 presets: [["@babel/preset-env", { targets: { browsers: ["ie >= 11"] } }]]
               })
@@ -109,6 +152,7 @@ export class Program<TCmdOptions extends string | number, TArgs> {
     });
 
     await Promise.all(promises);
+    await this.patch();
     this.log();
   }
 
