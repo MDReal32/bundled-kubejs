@@ -59,7 +59,7 @@ export class Program<TCmdOptions extends string | number, TArgs> {
       if (problemIndex === -1) return;
 
       const fnStart = problemIndex - 1;
-      const fnEnd = problemIndex + 6;
+      const fnEnd = problemIndex + 7;
 
       // We know that we are not in a reflective environment, so we patch the function to simply return false
       const right = "return false;";
