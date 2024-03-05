@@ -57,15 +57,11 @@ export class Program<TCmdOptions extends string | number, TArgs> {
 
       // If not found, skip
       if (problemIndex === -1) return;
-
       const fnStart = problemIndex - 1;
-      const fnEnd = problemIndex + 6;
 
       // We know that we are not in a reflective environment, so we patch the function to simply return false
-      const right = "return false;";
+      lines.splice(fnStart, 8, "return false;");
 
-      // Replace the content
-      lines.splice(fnStart, fnEnd - fnStart, right);
       // Write the file
       await writeFile(file, lines.join("\n"));
     });
