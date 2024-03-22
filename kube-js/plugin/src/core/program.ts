@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
+import * as os from "os";
 import { UserConfig, UserConfigExport, build } from "vite";
 
 import babel from "@rollup/plugin-babel";
@@ -129,7 +130,10 @@ export class Program<TCmdOptions extends string | number, TArgs> {
 
       const userDefinedConfigFile = resolve(process.cwd(), "vite.config.js");
       if (existsSync(userDefinedConfigFile)) {
-        const userDefinedConfig = (await import(userDefinedConfigFile)) as UserConfigExport;
+        const userDefinedConfigUrl = this.isWindows()
+          ? `file://${userDefinedConfigFile}`
+          : userDefinedConfigFile;
+        const userDefinedConfig = (await import(userDefinedConfigUrl)) as UserConfigExport;
         if (typeof userDefinedConfig === "function") {
           const result = await userDefinedConfig({
             command: "build",
@@ -218,5 +222,10 @@ Hello dear KubeJS developer! Building project for you... State of parts:
       default:
         return state;
     }
+  }
+
+  private isWindows(): boolean {
+    // it will return 'win32' even on win64 systems
+    return os.platform() === "win32";
   }
 }
