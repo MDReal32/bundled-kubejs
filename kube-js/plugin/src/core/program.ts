@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
+import _ from "lodash";
 import * as os from "os";
 import { UserConfig, UserConfigExport, build } from "vite";
 
@@ -143,7 +144,7 @@ export class Program<TCmdOptions extends string | number, TArgs> {
             isSsrBuild: false,
             mode: "production"
           });
-          Object.assign(baseConfig, result);
+          _.merge(baseConfig, result);
         }
       }
 
