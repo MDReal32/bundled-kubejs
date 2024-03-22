@@ -133,7 +133,9 @@ export class Program<TCmdOptions extends string | number, TArgs> {
         const userDefinedConfigUrl = this.isWindows()
           ? `file://${userDefinedConfigFile}`
           : userDefinedConfigFile;
-        const userDefinedConfig = (await import(userDefinedConfigUrl)) as UserConfigExport;
+        const { default: userDefinedConfig } = (await import(userDefinedConfigUrl)) as {
+          default: UserConfigExport;
+        };
         if (typeof userDefinedConfig === "function") {
           const result = await userDefinedConfig({
             command: "build",
