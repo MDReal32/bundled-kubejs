@@ -10,7 +10,7 @@ yarn prepare
 yarn watch
 ```
 
-You can add additional buildable config in `vite.config.ts` but in my opinion I made everything which I can. After that you can start writing your scripts in `src` directory, and it will automatically will be built into kubejs/*_scripts directories depends on file. You can find more information about `KubeJS` mod in [here](https://kubejs.latvian.dev/).
+You can add additional buildable config in `vite.config.js` but in my opinion I made everything which I can. After that you can start writing your scripts in `src` directory, and it will automatically will be built into kubejs/*_scripts directories depends on file. You can find more information about `KubeJS` mod in [here](https://kubejs.latvian.dev/).
 
 # File Structure
 Here have 3 entry points for `vite` build.

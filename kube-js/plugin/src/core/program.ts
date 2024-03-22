@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { mkdir, readdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 import { UserConfig, UserConfigExport, build } from "vite";
@@ -30,11 +30,13 @@ export class Program<TCmdOptions extends string | number, TArgs> {
     public cmd: TCmdOptions,
     public options: TCmdOptions[],
     public args: TArgs
-  ) { }
+  ) {}
 
   async patch() {
     // Patch the output scripts due to rhino made the var scoped
-    const outputs = ["client", "server", "startup"].map(env => resolve(`kubejs/${env}_scripts/script.js`));
+    const outputs = ["client", "server", "startup"].map(env =>
+      resolve(`kubejs/${env}_scripts/script.js`)
+    );
 
     // Load the file and split the lines
     const promises = outputs.map(async file => {
@@ -53,7 +55,9 @@ export class Program<TCmdOptions extends string | number, TArgs> {
       // }
 
       // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-      const problemIndex = lines.findIndex(line => line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {"));
+      const problemIndex = lines.findIndex(line =>
+        line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
+      );
 
       // If not found, skip
       if (problemIndex === -1) return;
@@ -123,7 +127,7 @@ export class Program<TCmdOptions extends string | number, TArgs> {
         logLevel: "silent"
       };
 
-      const userDefinedConfigFile = resolve(process.cwd(), "vite.config.ts");
+      const userDefinedConfigFile = resolve(process.cwd(), "vite.config.js");
       if (existsSync(userDefinedConfigFile)) {
         const userDefinedConfig = (await import(userDefinedConfigFile)) as UserConfigExport;
         if (typeof userDefinedConfig === "function") {
