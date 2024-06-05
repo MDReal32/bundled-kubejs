@@ -1,10 +1,9 @@
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { basename, dirname, resolve } from "node:path";
 
 import _ from "lodash";
-import * as os from "os";
-import { UserConfig, UserConfigExport, build } from "vite";
+import { UserConfig, build } from "vite";
 
 import babel from "@rollup/plugin-babel";
 
@@ -33,47 +32,6 @@ export class Program<TCmdOptions extends string | number, TArgs> {
     public options: TCmdOptions[],
     public args: TArgs
   ) {}
-
-  async patch() {
-    // Patch the output scripts due to rhino made the var scoped
-    const outputs = ["client", "server", "startup"].map(env =>
-      resolve(`kubejs/${env}_scripts/script.js`)
-    );
-
-    // Load the file and split the lines
-    const promises = outputs.map(async file => {
-      const content = await readFile(file, "utf-8");
-      const lines = content.split("\n");
-
-      // function l() {
-      //   try {
-      //     var e = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-      //     }));
-      //   } catch (t) {
-      //   }
-      //   return (l = function() {
-      //     return !!e;
-      //   })();
-      // }
-
-      // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-      const problemIndex = lines.findIndex(line =>
-        line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
-      );
-
-      // If not found, skip
-      if (problemIndex === -1) return;
-      const fnStart = problemIndex - 1;
-
-      // We know that we are not in a reflective environment, so we patch the function to simply return false
-      lines.splice(fnStart, 8, "return false;");
-
-      // Write the file
-      await writeFile(file, lines.join("\n"));
-    });
-
-    await Promise.all(promises);
-  }
 
   async build() {
     this.log();
@@ -129,23 +87,31 @@ export class Program<TCmdOptions extends string | number, TArgs> {
         logLevel: "silent"
       };
 
-      const userDefinedConfigFile = resolve(process.cwd(), "vite.config.js");
-      if (existsSync(userDefinedConfigFile)) {
-        const userDefinedConfigUrl = this.isWindows()
-          ? `file://${userDefinedConfigFile}`
-          : userDefinedConfigFile;
-        const { default: userDefinedConfig } = (await import(userDefinedConfigUrl)) as {
-          default: UserConfigExport;
-        };
-        if (typeof userDefinedConfig === "function") {
-          const result = await userDefinedConfig({
-            command: "build",
-            isPreview: false,
-            isSsrBuild: false,
-            mode: "production"
+      const possibleViteConfigFiles = [
+        resolve(process.cwd(), "vite.config.ts"),
+        resolve(process.cwd(), "vite.config.js")
+      ];
+      const viteConfigFile = possibleViteConfigFiles.find(file => existsSync(file));
+
+      if (viteConfigFile) {
+        let compiledConfigFileName = viteConfigFile;
+        if (viteConfigFile.endsWith(".ts")) {
+          const builtFileName = `${viteConfigFile}.${Date.now()}`;
+          const viteConfigUrl = this.isWindows ? `file://${viteConfigFile}` : viteConfigFile;
+          await build({
+            build: {
+              outDir: dirname(viteConfigFile),
+              ssr: true,
+              lib: { entry: { [basename(builtFileName)]: viteConfigUrl }, formats: ["es"] }
+            },
+            logLevel: "silent"
           });
-          _.merge(baseConfig, result);
+          compiledConfigFileName = `${builtFileName}.js`;
         }
+
+        const userDefinedConfig = await import(compiledConfigFileName);
+        _.merge(baseConfig, userDefinedConfig.default);
+        viteConfigFile.endsWith(".ts") && (await rm(compiledConfigFileName, { force: true }));
       }
 
       try {
@@ -171,6 +137,50 @@ export class Program<TCmdOptions extends string | number, TArgs> {
       default:
         console.log("No command specified");
     }
+  }
+
+  private async patch() {
+    // Patch the output scripts due to rhino made the var scoped
+    const outputs = ["client", "server", "startup"].map(env =>
+      resolve(`kubejs/${env}_scripts/script.js`)
+    );
+
+    // Load the file and split the lines
+    const promises = outputs.map(async file => {
+      const content = await readFile(file, "utf-8");
+      const lines = content.split("\n");
+
+      // Injected Script
+      /*
+         function l() {
+            try {
+              var e = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+            } catch (t) {
+            }
+            return (l = function() {
+              return !!e;
+            })();
+          }
+       */
+
+      // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+      const problemIndex = lines.findIndex(line =>
+        line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
+      );
+
+      // If not found, skip
+      if (problemIndex === -1) return;
+      const fnStart = problemIndex - 1;
+
+      // We know that we are not in a reflective environment, so we patch the function to simply return false
+      lines.splice(fnStart, 8, "return false;");
+
+      // Write the file
+      await writeFile(file, lines.join("\n"));
+    });
+
+    await Promise.all(promises);
   }
 
   private async prepare() {
@@ -227,8 +237,8 @@ Hello dear KubeJS developer! Building project for you... State of parts:
     }
   }
 
-  private isWindows(): boolean {
+  private get isWindows() {
     // it will return 'win32' even on win64 systems
-    return os.platform() === "win32";
+    return process.platform === "win32";
   }
 }
