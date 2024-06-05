@@ -1,7 +1,9 @@
 import { existsSync } from "node:fs";
-import { mkdir, readdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
+import _ from "lodash";
+import * as os from "os";
 import { UserConfig, UserConfigExport, build } from "vite";
 
 import babel from "@rollup/plugin-babel";
@@ -30,11 +32,13 @@ export class Program<TCmdOptions extends string | number, TArgs> {
     public cmd: TCmdOptions,
     public options: TCmdOptions[],
     public args: TArgs
-  ) { }
+  ) {}
 
   async patch() {
     // Patch the output scripts due to rhino made the var scoped
-    const outputs = ["client", "server", "startup"].map(env => resolve(`kubejs/${env}_scripts/script.js`));
+    const outputs = ["client", "server", "startup"].map(env =>
+      resolve(`kubejs/${env}_scripts/script.js`)
+    );
 
     // Load the file and split the lines
     const promises = outputs.map(async file => {
@@ -53,19 +57,17 @@ export class Program<TCmdOptions extends string | number, TArgs> {
       // }
 
       // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-      const problemIndex = lines.findIndex(line => line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {"));
+      const problemIndex = lines.findIndex(line =>
+        line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
+      );
 
       // If not found, skip
       if (problemIndex === -1) return;
-
       const fnStart = problemIndex - 1;
-      const fnEnd = problemIndex + 6;
 
       // We know that we are not in a reflective environment, so we patch the function to simply return false
-      const right = "return false;";
+      lines.splice(fnStart, 8, "return false;");
 
-      // Replace the content
-      lines.splice(fnStart, fnEnd - fnStart, right);
       // Write the file
       await writeFile(file, lines.join("\n"));
     });
@@ -127,9 +129,14 @@ export class Program<TCmdOptions extends string | number, TArgs> {
         logLevel: "silent"
       };
 
-      const userDefinedConfigFile = resolve(process.cwd(), "vite.config.ts");
+      const userDefinedConfigFile = resolve(process.cwd(), "vite.config.js");
       if (existsSync(userDefinedConfigFile)) {
-        const userDefinedConfig = (await import(userDefinedConfigFile)) as UserConfigExport;
+        const userDefinedConfigUrl = this.isWindows()
+          ? `file://${userDefinedConfigFile}`
+          : userDefinedConfigFile;
+        const { default: userDefinedConfig } = (await import(userDefinedConfigUrl)) as {
+          default: UserConfigExport;
+        };
         if (typeof userDefinedConfig === "function") {
           const result = await userDefinedConfig({
             command: "build",
@@ -137,7 +144,7 @@ export class Program<TCmdOptions extends string | number, TArgs> {
             isSsrBuild: false,
             mode: "production"
           });
-          Object.assign(baseConfig, result);
+          _.merge(baseConfig, result);
         }
       }
 
@@ -218,5 +225,10 @@ Hello dear KubeJS developer! Building project for you... State of parts:
       default:
         return state;
     }
+  }
+
+  private isWindows(): boolean {
+    // it will return 'win32' even on win64 systems
+    return os.platform() === "win32";
   }
 }
