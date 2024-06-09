@@ -43,7 +43,7 @@ jobs:
             fi
           fi
         env:
-          name: $("${{ matrix.packages }}" | cut -d '/' -f 2)
+          name: "$(echo "${{ matrix.packages }}" | cut -d '/' -f 2)"
 
       - run: corepack enable
         if: steps.folder-changed.outputs.changed == 'true'
