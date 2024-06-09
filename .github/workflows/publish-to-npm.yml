@@ -35,6 +35,7 @@ jobs:
         id: folder-changed
         run: |
           echo "changed=false" >> $GITHUB_OUTPUT
+          echo "$name"
           if [ -d "kube-js/$name" ]; then
             git fetch origin master
             changes=$(git diff --name-only HEAD origin/master -- "kube-js/$name" | wc -l)
@@ -43,7 +44,7 @@ jobs:
             fi
           fi
         env:
-          name: "$(echo "${{ matrix.packages }}" | cut -d '/' -f 2)"
+          name: $("${{ matrix.packages }}" | cut -d '/' -f 2)
 
       - run: corepack enable
         if: steps.folder-changed.outputs.changed == 'true'
