@@ -35,9 +35,13 @@ Add these scripts to your `package.json` file.
 }
 ```
 
-Add that typing to `vite` environment file (`vite-env.d.ts`).
-```typescript
-/// <reference types="@kubejs/plugin/probe.d.ts" />
+Add this configuration to your tsconfig.json file.
+```json
+{
+  "compilerOptions": {
+    "types": ["@kubejs/plugin/probe.d.ts"]
+  }
+}
 ```
 
 Now you can run `npm run build` or `yarn build` to build your scripts for production.  
@@ -64,7 +68,7 @@ If you have any idea, or you want to contribute to this project please open an i
 You can contact with me via [Discord](https://discordapp.com/users/673855981473628201) or [LinkedIn](https://www.linkedin.com/in/mdrealiyev)
 
 # TODO
- - [ ] Add framework support (React, Vue, etc...)
+ - [ ] Add framework support (React, Vue, etc...) for UI based development
  - [ ] Add more examples
  - [ ] Add more documentation
  - [ ] Add more tests

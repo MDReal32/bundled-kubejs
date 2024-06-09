@@ -22,32 +22,32 @@
     "watch": "vite build --watch"
   },
   "dependencies": {
-    "archiver": "^6.0.1",
-    "ejs": "3.1.9",
-    "electron": "^28.1.0",
-    "inquirer": "^9.2.12",
+    "archiver": "^7.0.1",
+    "ejs": "3.1.10",
+    "electron": "^30.1.0",
+    "inquirer": "^9.2.23",
     "lodash": "^4.17.21",
-    "memfs": "^4.6.0",
-    "reflect-metadata": "^0.1.14",
-    "simple-git": "^3.21.0",
+    "memfs": "^4.9.2",
+    "reflect-metadata": "^0.2.2",
+    "simple-git": "^3.24.0",
     "temp-dir": "^3.0.0",
-    "yaml": "^2.3.4",
+    "yaml": "^2.4.5",
     "yargs": "17.7.2",
-    "yarn": "^1.22.21",
-    "zod": "^3.22.4"
+    "yarn": "^1.22.22",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/archiver": "^6",
-    "@types/ejs": "^3",
-    "@types/inquirer": "^9",
-    "@types/lodash": "^4",
-    "@types/node": "^20.10.3",
+    "@types/archiver": "^6.0.2",
+    "@types/ejs": "^3.1.5",
+    "@types/inquirer": "^9.0.7",
+    "@types/lodash": "^4.17.5",
+    "@types/node": "^20.14.2",
     "@types/yargs": "17.0.32",
     "concurrently": "8.2.2",
-    "nodemon": "^3.0.2",
-    "typescript": "5.3.2",
-    "vite": "5.0.5",
-    "vite-plugin-dts": "3.6.4"
+    "nodemon": "^3.1.3",
+    "typescript": "5.4.5",
+    "vite": "5.2.13",
+    "vite-plugin-dts": "3.9.1"
   },
   "packageManager": "yarn@4.0.2"
 }
