@@ -2150,8 +2150,6 @@ __metadata:
     vite: "npm:5.2.13"
     vite-plugin-dts: "npm:3.9.1"
     yargs: "npm:17.7.2"
-  peerDependencies:
-    vite: ">=5"
   bin:
     kubejs: bin/cli.js
   languageName: unknown
