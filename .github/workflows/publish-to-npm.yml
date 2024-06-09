@@ -14,16 +14,46 @@ jobs:
         packages: ["@kubejs/plugin", "@kubejs/generator"]
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v3
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Cache folder
+        id: cache-folder
+        uses: actions/cache@v4
+        with:
+          path: path/to/your/folder
+          key: ${{ runner.os }}-folder-${{ hashFiles('path/to/your/folder/**') }}
+          restore-keys: |
+            ${{ runner.os }}-folder-
+
+      - name: Check if folder has changed
+        id: folder-changed
+        run: |
+          echo "changed=false" >> $GITHUB_OUTPUT
+          name=$("${{ matrix.packages }}" | cut -d '/' -f 2)
+          if [ -d "kube-js/$name" ]; then
+            git fetch origin master
+            changes=$(git diff --name-only HEAD origin/master -- "kube-js/$name" | wc -l)
+            if [ "$changes" -gt 0 ]; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
+          fi
+
       - run: corepack enable
+        if: steps.folder-changed.outputs.changed == 'true'
+
       - run: yarn
+        if: steps.folder-changed.outputs.changed == 'true'
+
       - run: yarn workspace ${{ matrix.packages }} build
-      # publish to npm kube-js/plugin
+        if: steps.folder-changed.outputs.changed == 'true'
+
       - run: yarn workspace ${{ matrix.packages }} publish:me
+        if: steps.folder-changed.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
