@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    name: Publish {{ matrix.packages }}
+    name: Publish ${{ matrix.packages }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,8 +22,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: corepack enable
       - run: yarn
-      - run: yarn workspace {{ matrix.packages }} build
+      - run: yarn workspace ${{ matrix.packages }} build
       # publish to npm kube-js/plugin
-      - run: yarn workspace {{ matrix.packages }} publish:me
+      - run: yarn workspace ${{ matrix.packages }} publish:me
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
