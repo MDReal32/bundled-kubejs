@@ -43,7 +43,7 @@ jobs:
             fi
           fi
 
-      - run: echo ${{ toJSON(steps.folder-changed.outputs) }}
+      - run: echo "${{ toJSON(steps.folder-changed.outputs) }}"
 
       - run: corepack enable
         if: steps.folder-changed.outputs.changed == 'true'
