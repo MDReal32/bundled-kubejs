@@ -29,6 +29,7 @@
     "watch": "vite build --watch"
   },
   "dependencies": {
+    "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
     "@rollup/plugin-babel": "^6.0.4",
     "chokidar": "^3.6.0",

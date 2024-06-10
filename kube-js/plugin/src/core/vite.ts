@@ -62,6 +62,7 @@ export class Vite<TArgs extends Args> {
     await this.prepare();
     const entryPromises = entries.map(entry => this._build(entry));
     await Promise.all(entryPromises);
+    await this.patch();
     this.log();
     this.logger.reset();
   }
@@ -192,19 +193,19 @@ export class Vite<TArgs extends Args> {
       return;
     }
 
-    await this.patch(entry);
     this.log();
   }
 
-  private async patch(entry: Entry) {
-    // Load the file and split the lines
-    const file = `kubejs/${entry}_scripts/script.js`;
+  async patch() {
+    const promises = entries.map(async entry => {
+      // Load the file and split the lines
+      const file = `kubejs/${entry}_scripts/script.js`;
 
-    const content = await readFile(file, "utf-8");
-    const lines = content.split("\n");
+      const content = await readFile(file, "utf-8");
+      const lines = content.split("\n");
 
-    // Injected Script
-    /*
+      // Injected Script
+      /*
          function l() {
             try {
               var e = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
@@ -217,20 +218,23 @@ export class Vite<TArgs extends Args> {
           }
        */
 
-    // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-    const problemIndex = lines.findIndex(line =>
-      line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
-    );
+      // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+      const problemIndex = lines.findIndex(line =>
+        line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
+      );
 
-    // If not found, skip
-    if (problemIndex === -1) return;
-    const fnStart = problemIndex - 1;
+      // If not found, skip
+      if (problemIndex === -1) return;
+      const fnStart = problemIndex - 1;
 
-    // We know that we are not in a reflective environment, so we patch the function to simply return false
-    lines.splice(fnStart, 8, "return false;");
+      // We know that we are not in a reflective environment, so we patch the function to simply return false
+      lines.splice(fnStart, 8, "return false;");
 
-    // Write the file
-    await writeFile(file, lines.join("\n"));
+      // Write the file
+      await writeFile(file, lines.join("\n"));
+    });
+
+    await Promise.all(promises);
   }
 
   private vitePluginTransformation(entry: Entry): Plugin {
