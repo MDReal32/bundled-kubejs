@@ -8,6 +8,7 @@ import type { Plugin, UserConfig } from "vite";
 
 import babel from "@rollup/plugin-babel";
 
+import { __dirname } from "../const";
 import { App } from "../types/app";
 import { AppState } from "../types/app-states";
 import { Args } from "../types/args";
