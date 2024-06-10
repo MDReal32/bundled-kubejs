@@ -7,11 +7,11 @@ on:
 
 jobs:
   publish:
-    name: Publish ${{ matrix.packages }}
+    name: Publish ${{ matrix.package_name }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        packages: ["@kubejs/plugin", "@kubejs/generator"]
+        package_name: ["plugin", "generator"]
     steps:
       - uses: actions/checkout@v4
 
@@ -22,29 +22,28 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
+
+
       - name: Cache folder
         id: cache-folder
         uses: actions/cache@v4
         with:
-          path: path/to/your/folder
-          key: ${{ runner.os }}-folder-${{ hashFiles('path/to/your/folder/**') }}
+          path: kube-js/${{ matrix.package_name }}
+          key: ${{ runner.os }}-dir-${{ hashFiles(format('kube-js/{0}', matrix.package_name)) }}
           restore-keys: |
-            ${{ runner.os }}-folder-
+            ${{ runner.os }}-dir-${{ matrix.package_name }}
 
       - name: Check if folder has changed
         id: folder-changed
         run: |
           echo "changed=false" >> $GITHUB_OUTPUT
-          echo "$name"
-          if [ -d "kube-js/$name" ]; then
+          if [ -d "kube-js/${{ matrix.package_name }}" ]; then
             git fetch origin master
-            changes=$(git diff --name-only HEAD origin/master -- "kube-js/$name" | wc -l)
+            changes=$(git diff --name-only HEAD origin/master -- "kube-js/${{ matrix.package_name }}" | wc -l)
             if [ "$changes" -gt 0 ]; then
               echo "changed=true" >> $GITHUB_OUTPUT
             fi
           fi
-        env:
-          name: $("${{ matrix.packages }}" | cut -d '/' -f 2)
 
       - run: corepack enable
         if: steps.folder-changed.outputs.changed == 'true'
@@ -52,10 +51,10 @@ jobs:
       - run: yarn
         if: steps.folder-changed.outputs.changed == 'true'
 
-      - run: yarn workspace ${{ matrix.packages }} build
+      - run: yarn workspace ${{ matrix.package_name }} build
         if: steps.folder-changed.outputs.changed == 'true'
 
-      - run: yarn workspace ${{ matrix.packages }} publish:me
+      - run: yarn workspace ${{ matrix.package_name }} publish:me
         if: steps.folder-changed.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
