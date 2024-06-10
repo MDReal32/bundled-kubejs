@@ -32,7 +32,7 @@ jobs:
       - name: Calculate folder hash
         id: calculate-hash
         run: |
-          FOLDER_TO_HASH="kubejs/${{ matrix.package_name }}"
+          FOLDER_TO_HASH="kube-js/${{ matrix.package_name }}"
           HASH_FILE=".folder_hash"
           
           # Calculate the current hash
