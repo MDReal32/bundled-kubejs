@@ -32,11 +32,6 @@ export interface TemplateGenerateOptions {
   mcVersion: string;
 
   /**
-   * The package manager of the project.
-   */
-  // packageManager?: "npm" | "yarn" | "yarn2" | "pnpm";
-
-  /**
    * Minecraft Forge or Fabric.
    */
   modLoaderType?: ModLoaderType;

@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/generator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A generator for KubeJS plugin",
   "repository": {
     "type": "git",
@@ -11,14 +11,18 @@
   "main": "build/main.js",
   "types": "build/main.d.ts",
   "bin": {
-    "kubejs": "bin/cli.js"
+    "kubejs": "bin/generator.js"
   },
-  "files": [],
+  "files": [
+    "build",
+    "bin",
+    "templates"
+  ],
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "yarn build",
     "publish:me": "npm publish --access public",
-    "start:dev": "nodemon build/main.js -- -n sample-project -v 1.0.0 -m 1.18.2 -t forge -p sample-project",
+    "start:dev": "nodemon build/dev.js -- --pm npm -n sample-project -v 1.0.0 -m 1.18.2 -t forge -p sample-project",
     "watch": "vite build --watch"
   },
   "dependencies": {
@@ -27,7 +31,6 @@
     "electron": "^30.1.0",
     "inquirer": "^9.2.23",
     "lodash": "^4.17.21",
-    "memfs": "^4.9.2",
     "reflect-metadata": "^0.2.2",
     "simple-git": "^3.24.0",
     "temp-dir": "^3.0.0",
@@ -46,8 +49,7 @@
     "concurrently": "8.2.2",
     "nodemon": "^3.1.3",
     "typescript": "5.4.5",
-    "vite": "5.2.13",
-    "vite-plugin-dts": "3.9.1"
+    "vite": "5.2.13"
   },
   "packageManager": "yarn@4.0.2"
 }

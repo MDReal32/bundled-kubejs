@@ -20,5 +20,4 @@ export const saveDialog = async (fileForSave: string, name: string) => {
   }
 
   await cp(fileForSave, saveTo, { recursive: true });
-  await rm(fileForSave, { recursive: true });
 };

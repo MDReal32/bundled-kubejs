@@ -1,8 +1,8 @@
 import { SpawnOptions, spawn } from "node:child_process";
 
+import { LogActions } from "../logger/log-actions";
+import { Logger } from "../logger/logger";
 import { CommandBuilder } from "./command-builder";
-import { LogActions } from "./logger/log-actions";
-import { Logger } from "./logger/logger";
 
 @LogActions("CommandExecutor")
 export class CommandExecutor {
@@ -30,5 +30,9 @@ export class CommandExecutor {
       child.on("error", reject);
       child.on("close", resolve);
     });
+  }
+
+  protected async await(seconds: number) {
+    await new Promise<void>(resolve => setTimeout(resolve, seconds * 1000));
   }
 }

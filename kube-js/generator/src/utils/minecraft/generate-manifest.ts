@@ -1,8 +1,8 @@
-import { CfManifest } from "../types/cf-manifest";
-import { CfFile } from "../types/mc/cf-file";
-import { CfMod } from "../types/mc/cf-mod";
-import { RequiredModFiles } from "../types/mc/required-mod-files";
-import { TemplateGenerateOptions } from "../types/template-generate-options";
+import { CfManifest } from "../../types/cf-manifest";
+import { CfFile } from "../../types/mc/cf-file";
+import { CfMod } from "../../types/mc/cf-mod";
+import { RequiredModFiles } from "../../types/mc/required-mod-files";
+import { TemplateGenerateOptions } from "../../types/template-generate-options";
 import { getLatestModloaderForVersion } from "./get-latest-modloader-for-version";
 import { resolveMods } from "./resolve-mods";
 

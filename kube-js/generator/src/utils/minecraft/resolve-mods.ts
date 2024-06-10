@@ -1,11 +1,11 @@
-import { cfFetch } from "../api/cf-fetch";
-import { CfFile } from "../types/mc/cf-file";
-import { CfMod } from "../types/mc/cf-mod";
-import { RequiredModFiles } from "../types/mc/required-mod-files";
-import { ModLoaderType } from "../types/mod-loader-type";
-import { LogActions } from "./logger/log-actions";
-import { Logger } from "./logger/logger";
-import { queue } from "./queue";
+import { cfFetch } from "../../api/cf-fetch";
+import { CfFile } from "../../types/mc/cf-file";
+import { CfMod } from "../../types/mc/cf-mod";
+import { RequiredModFiles } from "../../types/mc/required-mod-files";
+import { ModLoaderType } from "../../types/mod-loader-type";
+import { LogActions } from "../logger/log-actions";
+import { Logger } from "../logger/logger";
+import { queue } from "../queue";
 
 type CfFilesWithLatest = CfFile[] & { latest: CfFile };
 

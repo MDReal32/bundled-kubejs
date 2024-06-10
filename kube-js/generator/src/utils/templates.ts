@@ -1,8 +1,6 @@
 import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { IFs } from "memfs";
-
 import { __dirname } from "../main";
 import { TemplateConfig } from "../types/template-config";
 import { Logger } from "./logger/logger";
@@ -11,8 +9,6 @@ import { Template } from "./template";
 export class Templates {
   private readonly __templates: Record<string, TemplateConfig> = {};
   private readonly logger = new Logger("Templates");
-
-  constructor(private readonly fs: IFs) {}
 
   get templates() {
     return this.__templates;
@@ -49,6 +45,6 @@ export class Templates {
       throw new Error(`Template ${template} does not exist`);
     }
 
-    return new Template(this.__templates[template], this.fs);
+    return new Template(this.__templates[template]);
   }
 }

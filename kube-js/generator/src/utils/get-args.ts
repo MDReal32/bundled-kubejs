@@ -37,7 +37,9 @@ export const getArgs = (options: ArgOptions) =>
     .option("mod-loader-type", {
       alias: "t",
       type: "string",
-      choices: Object.keys(ModLoaderType).map(_.lowerCase),
+      choices: Object.keys(ModLoaderType)
+        .map(_.lowerCase)
+        .filter(s => !s.match(/\d+/)),
       description: "Mod loader type"
     })
     .option("template", {

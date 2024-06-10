@@ -1,5 +1,5 @@
-import { RequiredModFiles } from "../types/mc/required-mod-files";
-import { TemplateGenerateOptions } from "../types/template-generate-options";
+import { RequiredModFiles } from "../../types/mc/required-mod-files";
+import { TemplateGenerateOptions } from "../../types/template-generate-options";
 import { resolveMods } from "./resolve-mods";
 
 export const generateModListHtml = async (options: TemplateGenerateOptions): Promise<string> => {

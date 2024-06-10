@@ -1,6 +1,6 @@
-import { cfFetch } from "../api/cf-fetch";
-import { CfMod } from "../types/mc/cf-mod";
-import { RequiredModFiles } from "../types/mc/required-mod-files";
+import { cfFetch } from "../../api/cf-fetch";
+import { CfMod } from "../../types/mc/cf-mod";
+import { RequiredModFiles } from "../../types/mc/required-mod-files";
 
 export const getMinecraftVersions = async (): Promise<string[]> => {
   const interval = setTimeout(console.log, 10000, "Sorry for the wait, this may take a while...");

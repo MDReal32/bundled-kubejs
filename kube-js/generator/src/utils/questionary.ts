@@ -1,10 +1,10 @@
 import { createPromptModule } from "inquirer";
 import _ from "lodash";
 
-import { ArgOptions } from "./types/arg-options";
-import { ModLoaderType } from "./types/mod-loader-type";
-import { TemplateGenerateOptions } from "./types/template-generate-options";
-import { getMinecraftVersions } from "./utils/get-minecraft-versions";
+import { ArgOptions } from "../types/arg-options";
+import { ModLoaderType } from "../types/mod-loader-type";
+import { TemplateGenerateOptions } from "../types/template-generate-options";
+import { getMinecraftVersions } from "./minecraft/get-minecraft-versions";
 
 export const questionary = async (
   initialArgs: Partial<TemplateGenerateOptions>,
