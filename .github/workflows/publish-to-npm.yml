@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package_name: ["plugin", "generator"]
+        package_name: [ "plugin", "generator" ]
     steps:
       - uses: actions/checkout@v4
 
@@ -22,39 +22,59 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Cache folder
-        id: cache-folder
-        uses: actions/cache@v4
+      - name: Restore hash from cache
+        id: restore-cache
+        uses: actions/cache@v2
         with:
-          path: kube-js/${{ matrix.package_name }}
-          key: ${{ runner.os }}-dir-${{ hashFiles(format('kube-js/{0}', matrix.package_name)) }}
-          restore-keys: |
-            ${{ runner.os }}-dir-${{ matrix.package_name }}
+          path: .folder_hash
+          key: folder-hash-cache
 
-      - name: Check if folder has changed
-        id: folder-changed
+      - name: Calculate folder hash
+        id: calculate-hash
         run: |
-          echo "changed=false" >> $GITHUB_OUTPUT
-          if [ -d "kube-js/${{ matrix.package_name }}" ]; then
-            git fetch origin master
-            changes=$(git diff --name-only HEAD origin/master -- "kube-js/${{ matrix.package_name }}" | wc -l)
-            if [ "$changes" -gt 0 ]; then
-              echo "changed=true" >> $GITHUB_OUTPUT
-            fi
+          FOLDER_TO_HASH="kubejs/${{ matrix.package_name }}"
+          HASH_FILE=".folder_hash"
+          
+          # Calculate the current hash
+          CURRENT_HASH=$(find "$FOLDER_TO_HASH" -type f -exec sha256sum {} + | sort | sha256sum | awk '{ print $1 }')
+          echo "Current hash: $CURRENT_HASH"
+          
+          # Load the saved hash
+          if [[ -f $HASH_FILE ]]; then
+            SAVED_HASH=$(cat $HASH_FILE)
+          else
+            SAVED_HASH=null
+          fi
+          
+          echo "Saved hash: $SAVED_HASH"
+          
+          # Compare hashes
+          if [[ "$CURRENT_HASH" != "$SAVED_HASH" ]]; then
+            echo "Folder has changed."
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "$CURRENT_HASH" > $HASH_FILE
+          else
+            echo "Folder has not changed."
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - run: echo "${{ toJSON(steps.folder-changed.outputs) }}"
+      - name: Save updated hash to cache
+        if: steps.calculate-hash.outputs.changed == 'true'
+        uses: actions/cache@v2
+        with:
+          path: .folder_hash
+          key: folder-hash-cache
 
       - run: corepack enable
-        if: steps.folder-changed.outputs.changed == 'true'
+        if: steps.calculate-hash.outputs.changed == 'true'
 
       - run: yarn
-        if: steps.folder-changed.outputs.changed == 'true'
+        if: steps.calculate-hash.outputs.changed == 'true'
 
       - run: yarn workspace @kubejs/${{ matrix.package_name }} build
-        if: steps.folder-changed.outputs.changed == 'true'
+        if: steps.calculate-hash.outputs.changed == 'true'
 
       - run: yarn workspace @kubejs/${{ matrix.package_name }} publish:me
-        if: steps.folder-changed.outputs.changed == 'true'
+        if: steps.calculate-hash.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
