@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    name: Publish ${{ matrix.package_name }}
+    name: Publish @kubejs/${{ matrix.package_name }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -51,10 +51,10 @@ jobs:
       - run: yarn
         if: steps.folder-changed.outputs.changed == 'true'
 
-      - run: yarn workspace ${{ matrix.package_name }} build
+      - run: yarn workspace @kubejs/${{ matrix.package_name }} build
         if: steps.folder-changed.outputs.changed == 'true'
 
-      - run: yarn workspace ${{ matrix.package_name }} publish:me
+      - run: yarn workspace @kubejs/${{ matrix.package_name }} publish:me
         if: steps.folder-changed.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
