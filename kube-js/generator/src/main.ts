@@ -67,5 +67,8 @@ await rm(options.tmpDestination, { recursive: true, force: true });
 logger.info(`Cleaning up... done`);
 
 logger.info(`Opening save dialog...`);
-await saveDialog(`${options.tmpDestination}.zip`, templates.templates[options.template].name);
+await saveDialog(
+  `${options.tmpDestination}.zip`,
+  `${templates.templates[options.template].name} ${options.mcVersion}-${options.version}`
+);
 logger.info(`File saved!`);

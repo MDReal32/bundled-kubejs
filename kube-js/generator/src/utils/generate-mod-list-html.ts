@@ -9,7 +9,7 @@ export const generateModListHtml = async (options: TemplateGenerateOptions): Pro
   await resolveMods(
     options.mcVersion,
     [RequiredModFiles.KubeJS, RequiredModFiles.ProbeJS],
-    !!options.forge,
+    options.modLoaderType,
     async mod => {
       lines.push(
         `<li><a href="https://www.curseforge.com/minecraft/mc-mods/${mod.slug}">${mod.name} (by ${mod.authors[0].name})</a></li>`
