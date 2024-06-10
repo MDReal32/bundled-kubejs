@@ -58,13 +58,6 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Save updated hash to cache
-        if: steps.calculate-hash.outputs.changed == 'true'
-        uses: actions/cache@v2
-        with:
-          path: .folder_hash
-          key: folder-hash-cache
-
       - run: corepack enable
         if: steps.calculate-hash.outputs.changed == 'true'
 
@@ -78,3 +71,10 @@ jobs:
         if: steps.calculate-hash.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Save updated hash to cache
+        if: steps.calculate-hash.outputs.changed == 'true'
+        uses: actions/cache@v2
+        with:
+          path: .folder_hash
+          key: folder-hash-cache
