@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .folder_hash
-          key: folder-hash-cache
+          key: :::app-hash:@kubejs/{{ matrix.package_name }}
 
       - name: Calculate folder hash
         id: calculate-hash
@@ -77,4 +77,4 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .folder_hash
-          key: folder-hash-cache
+          key: :::app-hash:@kubejs/{{ matrix.package_name }}
