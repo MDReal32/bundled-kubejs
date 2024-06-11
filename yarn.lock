@@ -1621,9 +1621,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kubejs/generator@workspace:kube-js/generator":
+"@kubejs/generator@workspace:kubejs/generator":
   version: 0.0.0-use.local
-  resolution: "@kubejs/generator@workspace:kube-js/generator"
+  resolution: "@kubejs/generator@workspace:kubejs/generator"
   dependencies:
     "@types/archiver": "npm:^6.0.2"
     "@types/ejs": "npm:^3.1.5"
@@ -1652,9 +1652,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kubejs/plugin@workspace:^, @kubejs/plugin@workspace:kube-js/plugin":
+"@kubejs/monorepo@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@kubejs/plugin@workspace:kube-js/plugin"
+  resolution: "@kubejs/monorepo@workspace:."
+  dependencies:
+    "@trivago/prettier-plugin-sort-imports": "npm:4.3.0"
+    "@types/node": "npm:^20.14.2"
+    prettier: "npm:^3.3.1"
+    prettier-plugin-packagejson: "npm:^2.5.0"
+    typescript: "npm:^5.4.5"
+  languageName: unknown
+  linkType: soft
+
+"@kubejs/plugin@workspace:^, @kubejs/plugin@workspace:kubejs/plugin":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/plugin@workspace:kubejs/plugin"
   dependencies:
     "@babel/core": "npm:^7.24.7"
     "@babel/preset-env": "npm:^7.24.7"
@@ -1671,6 +1683,14 @@ __metadata:
     yargs: "npm:17.7.2"
   bin:
     kubejs: bin/cli.js
+  languageName: unknown
+  linkType: soft
+
+"@kubejs/sample-1.18.2@workspace:samples/sample-1.18.2":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/sample-1.18.2@workspace:samples/sample-1.18.2"
+  dependencies:
+    "@kubejs/plugin": "workspace:^"
   languageName: unknown
   linkType: soft
 
@@ -2381,19 +2401,6 @@ __metadata:
   checksum: 57b06ae984bc32a0d22592c87384cd88fe4511b1dd7581497831c56d41939c8a001b28e7b853e1450f2bf61992dfcaa8ae2d0d161a0a90c4fb631ef07098fbac
   languageName: node
   linkType: hard
-
-"app@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "app@workspace:."
-  dependencies:
-    "@kubejs/plugin": "workspace:^"
-    "@trivago/prettier-plugin-sort-imports": "npm:4.3.0"
-    "@types/node": "npm:^20.14.2"
-    prettier: "npm:^3.3.1"
-    prettier-plugin-packagejson: "npm:^2.5.0"
-    typescript: "npm:^5.4.5"
-  languageName: unknown
-  linkType: soft
 
 "archiver-utils@npm:^5.0.0, archiver-utils@npm:^5.0.2":
   version: 5.0.2
