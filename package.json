@@ -9,16 +9,12 @@
   "type": "module",
   "workspaces": [
     "samples/*",
-    "modules/*"
-    "kubejs/*",
+    "kubejs/*"
   ],
   "scripts": {
-    "build": "kubejs build",
-    "dev:act": "gh act --secret-file .env",
-    "watch": "kubejs build --watch"
+    "dev:act": "gh act --secret-file .env"
   },
   "devDependencies": {
-    "@kubejs/plugin": "workspace:^",
     "@trivago/prettier-plugin-sort-imports": "4.3.0",
     "@types/node": "^20.14.2",
     "prettier": "^3.3.1",
