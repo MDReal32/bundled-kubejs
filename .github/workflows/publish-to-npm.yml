@@ -36,7 +36,7 @@ jobs:
           HASH_FILE=".folder_hash"
           
           # Calculate the current hash
-          CURRENT_HASH=$(find "$FOLDER_TO_HASH" -type f -exec sha256sum {} + | sort | sha256sum | awk '{ print $1 }')
+          CURRENT_HASH=$(find "$FOLDER_TO_HASH" -type f -exec sha256sum {} \; | sort -k 2 | sha256sum | awk '{ print $1 }')
           echo "Current hash: $CURRENT_HASH"
           
           # Load the saved hash
