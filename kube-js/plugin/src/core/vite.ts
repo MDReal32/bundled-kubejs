@@ -88,7 +88,7 @@ export class Vite<TArgs extends Args> {
       watcher.once("add", () => this.watchFile(entry));
     }
 
-    await this._build(entry, { build: { watch: { include: [entryFile] } } });
+    await this._build(entry, { build: { watch: {} } });
   }
 
   private log(state?: AppState) {
