@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A generator for KubeJS plugin",
   "repository": {
     "type": "git",
