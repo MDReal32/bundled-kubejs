@@ -1,11 +1,11 @@
 {
   "name": "@kubejs/plugin",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "A KubeJS plugin",
   "repository": {
     "type": "git",
     "url": "https://github.com/MDReal32/bundled-kubejs.git",
-    "directory": "kube-js/plugin"
+    "directory": "kubejs/plugin"
   },
   "type": "module",
   "main": "build/main.js",

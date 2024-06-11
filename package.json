@@ -8,9 +8,9 @@
   },
   "type": "module",
   "workspaces": [
-    "kube-js/*",
     "samples/*",
     "modules/*"
+    "kubejs/*",
   ],
   "scripts": {
     "build": "kubejs build",

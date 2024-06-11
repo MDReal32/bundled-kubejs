@@ -247,10 +247,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# KubeJS
-kubejs/*
-!kubejs/*_scripts
-
 # CurseForge
 .curseclient
 user*cache.json
@@ -265,8 +261,4 @@ rhino.local.properties
 !mods/*.jar
 
 # Packages
-kube-js/*/build
-
-# Temporary
-tmp
-temp
+kubejs/*/build
