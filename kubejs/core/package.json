@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Core functionality for KubeJS",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "yarn build",
-    "publish:me": "npm publish --access public",
+    "publish:me": "yarn npm publish --access public",
     "watch": "vite build --watch"
   },
   "dependencies": {
