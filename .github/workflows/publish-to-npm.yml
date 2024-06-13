@@ -75,7 +75,7 @@ jobs:
         if: steps.calculate-hash.outputs.changed == 'true'
 
       - run: |
-          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > ~/.npmrc
+          sed -i 's/\$NODE_AUTH_TOKEN/${NODE_AUTH_TOKEN}/g' .yarnrc.yml
           yarn workspace @kubejs/${{ matrix.package_name }} publish:me
         if: steps.calculate-hash.outputs.changed == 'true'
         env:
