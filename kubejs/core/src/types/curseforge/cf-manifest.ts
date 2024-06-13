@@ -1,5 +1,5 @@
 export interface CfManifest {
-  minecraft: Minecraft;
+  minecraft: Pick<Minecraft, "version" | "modLoaders">;
   manifestType: string;
   manifestVersion: number;
   name: string;
@@ -8,18 +8,20 @@ export interface CfManifest {
   overrides: string;
 }
 
-interface File {
+export interface File {
   projectID: number;
   fileID: number;
   required: boolean;
 }
 
-interface Minecraft {
+export interface Minecraft {
   version: string;
+  additionalJavaArgs?: any;
   modLoaders: ModLoader[];
+  libraries?: any;
 }
 
-interface ModLoader {
+export interface ModLoader {
   id: string;
   primary: boolean;
 }

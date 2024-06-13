@@ -1,6 +1,5 @@
-import { cfFetch } from "../../api/cf-fetch";
-import { GameShortVersions } from "../../types/mc/game-short-versions";
-import { ModLoaderType } from "../../types/mod-loader-type";
+import { cfFetch } from "../../api";
+import { GameShortVersions, ModLoaderType } from "../../types";
 
 const fixName = (name: string) => name.toUpperCase() as any as ModLoaderType;
 

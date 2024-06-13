@@ -1,4 +1,4 @@
-import { ModLoaderType } from "../mod-loader-type";
+import { ModLoaderType } from "@kubejs/core";
 
 export interface GameShortVersions {
   name: string;
