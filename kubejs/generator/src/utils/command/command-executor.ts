@@ -1,7 +1,7 @@
 import { SpawnOptions, spawn } from "node:child_process";
 
-import { LogActions } from "../logger/log-actions";
-import { Logger } from "../logger/logger";
+import { LogActions, Logger } from "@kubejs/core";
+
 import { CommandBuilder } from "./command-builder";
 
 @LogActions("CommandExecutor")

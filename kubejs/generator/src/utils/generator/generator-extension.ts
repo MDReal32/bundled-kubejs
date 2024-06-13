@@ -1,8 +1,8 @@
 import simpleGit from "simple-git";
 
+import { LogActions, Logger } from "@kubejs/core";
+
 import { type GitOptions } from "../../types/commands/git-options";
-import { LogActions } from "../logger/log-actions";
-import { Logger } from "../logger/logger";
 
 @LogActions("GeneratorExtension")
 export class GeneratorExtension {

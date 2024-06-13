@@ -1,19 +1,19 @@
 import { createPromptModule } from "inquirer";
 import _ from "lodash";
 
-import { ArgOptions } from "../types/arg-options";
-import { ModLoaderType } from "../types/mod-loader-type";
-import { TemplateGenerateOptions } from "../types/template-generate-options";
+import { ModLoaderType, TemplateGenerateOptions } from "@kubejs/core";
+
 import { getMinecraftVersions } from "./minecraft/get-minecraft-versions";
+import { TemplatesConfig } from "./templates";
 
 export const questionary = async (
   initialArgs: Partial<TemplateGenerateOptions>,
-  options: ArgOptions
+  templates: TemplatesConfig
 ) => {
   const module = createPromptModule();
 
   const templateNameMap: Record<string, string> = {};
-  const templateNames = Object.entries(options.templates).map(([_key, config]) => {
+  const templateNames = Object.entries(templates).map(([_key, config]) => {
     templateNameMap[config.name] = _key;
     return config.name;
   });

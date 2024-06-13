@@ -1,5 +1,5 @@
-import { cfFetch } from "../../api/cf-fetch";
-import { CfMod } from "../../types/mc/cf-mod";
+import { CfMod, cfFetch } from "@kubejs/core";
+
 import { RequiredModFiles } from "../../types/mc/required-mod-files";
 
 export const getMinecraftVersions = async (): Promise<string[]> => {

@@ -1,13 +1,16 @@
 import { readFile, readdir } from "node:fs/promises";
-import { resolve } from "node:path";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
 
-import { __dirname } from "../main";
+import { Logger } from "@kubejs/core";
+
 import { TemplateConfig } from "../types/template-config";
-import { Logger } from "./logger/logger";
 import { Template } from "./template";
 
+export type TemplatesConfig = Record<string, TemplateConfig>;
+
 export class Templates {
-  private readonly __templates: Record<string, TemplateConfig> = {};
+  private readonly __templates: TemplatesConfig = {};
   private readonly logger = new Logger("Templates");
 
   get templates() {
@@ -15,7 +18,10 @@ export class Templates {
   }
 
   async prepare() {
-    const root = resolve(__dirname, "../template");
+    const require = createRequire(import.meta.url);
+    const basePath = require.resolve("@kubejs/generator");
+
+    const root = resolve(dirname(dirname(basePath)), "template");
     for (const template of await readdir(root)) {
       const templateRoot = resolve(root, template);
       let templateJsonSource: string;

@@ -1,11 +1,13 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
+import * as process from "node:process";
 
 import { watch } from "chokidar";
 import _ from "lodash";
 import type { Plugin, UserConfig } from "vite";
 
+import { Logger } from "@kubejs/core";
 import babel from "@rollup/plugin-babel";
 
 import { __dirname } from "../const";
@@ -13,15 +15,14 @@ import { App } from "../types/app";
 import { AppState } from "../types/app-states";
 import { Args } from "../types/args";
 import { Entry, entries } from "../types/entry";
-import { Logger } from "./logger";
 
 export class Vite<TArgs extends Args> {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger("KubeJS Plugin/Compiler");
 
   private readonly appStates: Record<Entry, App> = {
-    client: { state: AppState.PREPARING, transformedModules: 0 },
-    server: { state: AppState.PREPARING, transformedModules: 0 },
-    startup: { state: AppState.PREPARING, transformedModules: 0 }
+    client: { state: AppState.PREPARING },
+    server: { state: AppState.PREPARING },
+    startup: { state: AppState.PREPARING }
   };
 
   constructor(public args: TArgs) {}
@@ -34,6 +35,7 @@ export class Vite<TArgs extends Args> {
     const viteConfigFile = possibleViteConfigFiles.find(file => existsSync(file));
 
     if (viteConfigFile) {
+      this.logger.info(`Found vite config file at ${viteConfigFile}. Compiling...`);
       let compiledConfigFileName = viteConfigFile;
       if (viteConfigFile.endsWith(".ts")) {
         const { build } = await import("vite");
@@ -53,6 +55,7 @@ export class Vite<TArgs extends Args> {
 
       const userDefinedConfig = await import(compiledConfigFileName);
       viteConfigFile.endsWith(".ts") && (await rm(compiledConfigFileName, { force: true }));
+      this.logger.info(`Successfully compiled vite config file.`);
       return userDefinedConfig.default;
     }
 
@@ -60,22 +63,17 @@ export class Vite<TArgs extends Args> {
   }
 
   async build() {
+    this.logger.info("Starting to build scripts...");
     await this.prepare();
     const entryPromises = entries.map(entry => this._build(entry));
     await Promise.all(entryPromises);
     await this.patch();
-    this.log();
-    this.logger.reset();
   }
 
   async watch() {
-    process.once("exit", () => {
-      this.logger.reset();
-    });
-
+    this.logger.info("Starting to watch scripts...");
     await this.prepare();
     await Promise.all(entries.map(entry => this.watchFile(entry)));
-    this.log();
   }
 
   private async watchFile(entry: Entry) {
@@ -84,33 +82,22 @@ export class Vite<TArgs extends Args> {
     const watcher = watch(entryFile, { ignoreInitial: true });
     if (!isEntryExists) {
       console.warn(`Entry file for ${entry} not found. Watching for changes...`);
-      this.log();
       watcher.once("add", () => this.watchFile(entry));
     }
 
     await this._build(entry, { build: { watch: {} } });
   }
 
-  private log(state?: AppState) {
-    const { client, startup: stup, server } = this.appStates;
-    const message =
-      state === AppState.PREPARING
-        ? `Dear kubejs developer, we are preparing the environment for you. Please wait.`
-        : `Dear kubejs developer, state of each environment is as follows:
-  - Client: ${this.colorizeState(client.state)}; Transformed Modules: ${client.transformedModules}
-  - Server: ${this.colorizeState(server.state)}; Transformed Modules: ${server.transformedModules}
-  - Startup: ${this.colorizeState(stup.state)}; Transformed Modules: ${stup.transformedModules}`;
-
-    this.logger.log(message);
-  }
-
   private async prepare() {
-    this.logger.bindConsole();
-    this.log(AppState.PREPARING);
+    this.logger.info(
+      "Dear kubejs developer, we are preparing the environment for you. Please wait..."
+    );
     await this.programmaticallyPause();
     const modsDir = resolve(process.cwd(), "mods");
-    if (!existsSync(modsDir))
-      throw new Error(`Please setup project on root directory of minecraft forge project.`);
+    if (!existsSync(modsDir)) {
+      this.logger.error(`Please setup project on root directory of minecraft forge project.`);
+      process.exit(1);
+    }
 
     const probeGeneratedDir = resolve(process.cwd(), "kubejs/probe/generated");
     const files = existsSync(probeGeneratedDir) ? await readdir(probeGeneratedDir) : [];
@@ -118,7 +105,6 @@ export class Vite<TArgs extends Args> {
       console.warn(
         `Please install ProbeJS and run \`/probejs dump\` in-game to generate probe files.`
       );
-      this.log(AppState.PREPARING);
       return;
     }
     const generatedScripts = files.map(file => resolve(probeGeneratedDir, file));
@@ -127,7 +113,6 @@ export class Vite<TArgs extends Args> {
       .join("");
 
     await writeFile(resolve(__dirname, "../probe.d.ts"), tsGeneratedFile);
-    this.log();
   }
 
   private async programmaticallyPause() {
@@ -136,7 +121,6 @@ export class Vite<TArgs extends Args> {
 
   private async _build(entry: Entry, extraConfig?: UserConfig) {
     const app = this.appStates[entry];
-    this.log();
     await this.programmaticallyPause();
 
     const entryFile = resolve(`src/${entry}.ts`);
@@ -146,14 +130,14 @@ export class Vite<TArgs extends Args> {
       await mkdir(dirname(outputFile), { recursive: true });
       await writeFile(outputFile, "");
       app.state = AppState.ENTRY_NOT_FOUND;
-      this.log();
+      this.logger.error(`Entry file for ${entry} not found.`);
       return;
     }
 
     app.state = AppState.RUNNING;
-    this.log();
+    this.logger.info(`Building ${entry} scripts...`);
 
-    const baseConfig = _.merge<UserConfig, UserConfig>(
+    const baseConfig = _.merge<UserConfig, UserConfig, UserConfig>(
       {
         build: {
           emptyOutDir: false,
@@ -182,7 +166,8 @@ export class Vite<TArgs extends Args> {
         },
         logLevel: "silent"
       },
-      extraConfig || {}
+      extraConfig || {},
+      await this.resolveConfig()
     );
 
     try {
@@ -190,11 +175,9 @@ export class Vite<TArgs extends Args> {
       await build(baseConfig);
     } catch (e) {
       this.appStates[entry].state = AppState.FAILED;
-      this.log();
+      this.logger.error(`Failed to build ${entry} scripts.`, e);
       return;
     }
-
-    this.log();
   }
 
   async patch() {
@@ -249,20 +232,19 @@ export class Vite<TArgs extends Args> {
       async transform(_code, id) {
         await self.programmaticallyPause();
         transformedModules.add(id);
-        appState.transformedModules = transformedModules.size;
-        self.log();
       },
 
       renderChunk() {
         appState.state = AppState.SUCCEEDED;
-        self.log();
+        self.logger.info(
+          `Successfully built ${entry} scripts. Transformed ${transformedModules.size} modules.`
+        );
       },
 
       async watchChange(_file, { event }) {
         if (event === "delete") {
           appState.state = AppState.ENTRY_NOT_FOUND;
-          appState.transformedModules = 0;
-          self.log();
+          self.logger.error(`Entry file for ${entry} not found.`);
           await self.watchFile(entry);
           return;
         }
@@ -270,29 +252,9 @@ export class Vite<TArgs extends Args> {
 
         transformedModules.clear();
         appState.state = AppState.RUNNING;
-        appState.transformedModules = 0;
-        self.log();
+        self.logger.info(`Rebuilding ${entry} scripts...`);
       }
     };
-  }
-
-  private colorizeState(state: AppState) {
-    switch (state) {
-      case AppState.INITIALIZING:
-      case AppState.PREPARING:
-      case AppState.RUNNING:
-        return `\x1b[33m${state}\x1b[0m`;
-
-      case AppState.SUCCEEDED:
-        return `\x1b[32m${state}\x1b[0m`;
-
-      case AppState.FAILED:
-      case AppState.ENTRY_NOT_FOUND:
-        return `\x1b[31m${state}\x1b[0m`;
-
-      default:
-        return state;
-    }
   }
 
   private get isWindows() {

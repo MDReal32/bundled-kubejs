@@ -4,10 +4,10 @@ import { dirname, resolve, sep } from "node:path";
 
 import { renderFile } from "ejs";
 
-import { TemplateConfig } from "../types/template-config";
-import { TemplateGenerateOptions } from "../types/template-generate-options";
+import { Logger, TemplateGenerateOptions } from "@kubejs/core";
+
+import type { TemplateConfig } from "../types/template-config";
 import { GeneratorExtension } from "./generator/generator-extension";
-import { Logger } from "./logger/logger";
 
 export class Template {
   private readonly generatorExtension = new GeneratorExtension();
