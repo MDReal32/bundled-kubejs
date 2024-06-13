@@ -1637,6 +1637,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@kubejs/generator@workspace:kubejs/generator"
   dependencies:
+    "@kubejs/core": "workspace:^"
     "@types/archiver": "npm:^6.0.2"
     "@types/ejs": "npm:^3.1.5"
     "@types/inquirer": "npm:^9.0.7"

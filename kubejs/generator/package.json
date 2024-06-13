@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/generator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A generator for KubeJS plugin",
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "watch": "vite build --watch"
   },
   "dependencies": {
+    "@kubejs/core": "workspace:^",
     "ejs": "3.1.10",
     "inquirer": "^9.2.23",
     "lodash": "^4.17.21",
