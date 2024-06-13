@@ -74,7 +74,9 @@ jobs:
       - run: yarn workspace @kubejs/${{ matrix.package_name }} build
         if: steps.calculate-hash.outputs.changed == 'true'
 
-      - run: yarn workspace @kubejs/${{ matrix.package_name }} publish:me
+      - run: |
+          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > ~/.npmrc
+          yarn workspace @kubejs/${{ matrix.package_name }} publish:me
         if: steps.calculate-hash.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
