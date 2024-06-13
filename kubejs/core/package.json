@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core functionality for KubeJS",
   "repository": {
     "type": "git",
