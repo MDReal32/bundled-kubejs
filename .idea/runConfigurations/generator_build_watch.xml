@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="generator:build:watch" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/kube-js/generator/package.json" />
+  <configuration default="false" name="generator:build:watch" type="js.build_tools.npm" folderName="Generator">
+    <package-json value="$PROJECT_DIR$/kubejs/generator/package.json" />
     <command value="run" />
     <scripts>
       <script value="watch" />

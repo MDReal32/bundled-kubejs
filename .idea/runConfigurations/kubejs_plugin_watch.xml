@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="kubejs:plugin:watch" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/kube-js/plugin/package.json" />
+  <configuration default="false" name="kubejs:plugin:watch" type="js.build_tools.npm" folderName="Plugin">
+    <package-json value="$PROJECT_DIR$/kubejs/plugin/package.json" />
     <command value="run" />
     <scripts>
       <script value="watch" />

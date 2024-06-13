@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package_name: [ "plugin", "generator" ]
+        package_name:
+          - core
+          - plugin
+          - generator
     steps:
       - uses: actions/checkout@v4
 

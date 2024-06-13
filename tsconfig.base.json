@@ -15,10 +15,18 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    "baseUrl": "./",
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+
+    "paths": {
+      "@kubejs/core": ["./kubejs/core/src/main.ts"],
+      "@kubejs/core/dialog": ["./kubejs/core/src/dialog.ts"],
+      "@kubejs/plugin": ["./kubejs/plugin/src/main.ts"],
+      "@kubejs/generator": ["./kubejs/generator/src/main.ts"]
+    }
   }
 }

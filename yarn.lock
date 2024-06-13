@@ -1301,7 +1301,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.8.4":
   version: 7.24.7
   resolution: "@babel/runtime@npm:7.24.7"
   dependencies:
@@ -1621,6 +1621,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kubejs/core@workspace:^, @kubejs/core@workspace:kubejs/core":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/core@workspace:kubejs/core"
+  dependencies:
+    archiver: "npm:^7.0.1"
+    electron: "npm:^30.1.0"
+    temp-dir: "npm:^3.0.0"
+    typescript: "npm:5.4.5"
+    vite: "npm:5.2.13"
+  languageName: unknown
+  linkType: soft
+
 "@kubejs/generator@workspace:kubejs/generator":
   version: 0.0.0-use.local
   resolution: "@kubejs/generator@workspace:kubejs/generator"
@@ -1631,16 +1643,12 @@ __metadata:
     "@types/lodash": "npm:^4.17.5"
     "@types/node": "npm:^20.14.2"
     "@types/yargs": "npm:17.0.32"
-    archiver: "npm:^7.0.1"
-    concurrently: "npm:8.2.2"
     ejs: "npm:3.1.10"
-    electron: "npm:^30.1.0"
     inquirer: "npm:^9.2.23"
     lodash: "npm:^4.17.21"
     nodemon: "npm:^3.1.3"
     reflect-metadata: "npm:^0.2.2"
     simple-git: "npm:^3.24.0"
-    temp-dir: "npm:^3.0.0"
     typescript: "npm:5.4.5"
     vite: "npm:5.2.13"
     yaml: "npm:^2.4.5"
@@ -1670,6 +1678,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.24.7"
     "@babel/preset-env": "npm:^7.24.7"
+    "@kubejs/core": "workspace:^"
     "@rollup/plugin-babel": "npm:^6.0.4"
     "@types/babel__preset-env": "npm:^7.9.6"
     "@types/lodash": "npm:4.17.5"
@@ -2499,9 +2508,9 @@ __metadata:
   linkType: hard
 
 "bare-events@npm:^2.2.0":
-  version: 2.3.1
-  resolution: "bare-events@npm:2.3.1"
-  checksum: f12f1d91c058f01fd74b920545343eae633d3eeefad6e4f93c392b54a62fe667b397430e004caa7636240d371d301ec5d8888371cec8a3bfe2808f7edd0d3ff1
+  version: 2.4.2
+  resolution: "bare-events@npm:2.4.2"
+  checksum: 09fa923061f31f815e83504e2ed4a8ba87732a01db40a7fae703dbb7eef7f05d99264b5e186074cbe9698213990d1af564c62cca07a5ff88baea8099ad9a6303
   languageName: node
   linkType: hard
 
@@ -2566,16 +2575,16 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.22.2, browserslist@npm:^4.23.0":
-  version: 4.23.0
-  resolution: "browserslist@npm:4.23.0"
+  version: 4.23.1
+  resolution: "browserslist@npm:4.23.1"
   dependencies:
-    caniuse-lite: "npm:^1.0.30001587"
-    electron-to-chromium: "npm:^1.4.668"
+    caniuse-lite: "npm:^1.0.30001629"
+    electron-to-chromium: "npm:^1.4.796"
     node-releases: "npm:^2.0.14"
-    update-browserslist-db: "npm:^1.0.13"
+    update-browserslist-db: "npm:^1.0.16"
   bin:
     browserslist: cli.js
-  checksum: 8e9cc154529062128d02a7af4d8adeead83ca1df8cd9ee65a88e2161039f3d68a4d40fea7353cab6bae4c16182dec2fdd9a1cf7dc2a2935498cee1af0e998943
+  checksum: eb47c7ab9d60db25ce2faca70efeb278faa7282a2f62b7f2fa2f92e5f5251cf65144244566c86559419ff4f6d78f59ea50e39911321ad91f3b27788901f1f5e9
   languageName: node
   linkType: hard
 
@@ -2668,10 +2677,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001587":
-  version: 1.0.30001629
-  resolution: "caniuse-lite@npm:1.0.30001629"
-  checksum: e95136a423c0c5e7f9d026ef3f9be8d06cadc4c83ad65eedfaeaba6b5eb814489ea186e90bae1085f3be7348577e25f8fe436b384c2f983324ad8dea4a7dfe1d
+"caniuse-lite@npm:^1.0.30001629":
+  version: 1.0.30001633
+  resolution: "caniuse-lite@npm:1.0.30001633"
+  checksum: cd20fe5f8df6e5b0da567ef9d0d1cc22069548d3ed77a79e8ff62b873a7081a28b9f534dfbd23767642cbd7070e30605875d2073cef2f871e8cc7414e3a3d531
   languageName: node
   linkType: hard
 
@@ -2686,7 +2695,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
+"chalk@npm:^4.0.2, chalk@npm:^4.1.0":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -2859,26 +2868,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:8.2.2":
-  version: 8.2.2
-  resolution: "concurrently@npm:8.2.2"
-  dependencies:
-    chalk: "npm:^4.1.2"
-    date-fns: "npm:^2.30.0"
-    lodash: "npm:^4.17.21"
-    rxjs: "npm:^7.8.1"
-    shell-quote: "npm:^1.8.1"
-    spawn-command: "npm:0.0.2"
-    supports-color: "npm:^8.1.1"
-    tree-kill: "npm:^1.2.2"
-    yargs: "npm:^17.7.2"
-  bin:
-    conc: dist/bin/concurrently.js
-    concurrently: dist/bin/concurrently.js
-  checksum: 0e9683196fe9c071d944345d21d8f34aa6c0cc50c0dd897e95619f2f1c9eb4871dca851b2569da17888235b7335b4c821ca19deed35bebcd9a131ee5d247f34c
-  languageName: node
-  linkType: hard
-
 "convert-source-map@npm:^2.0.0":
   version: 2.0.0
   resolution: "convert-source-map@npm:2.0.0"
@@ -2932,15 +2921,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.30.0":
-  version: 2.30.0
-  resolution: "date-fns@npm:2.30.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.21.0"
-  checksum: e4b521fbf22bc8c3db332bbfb7b094fd3e7627de0259a9d17c7551e2d2702608a7307a449206065916538e384f37b181565447ce2637ae09828427aed9cb5581
-  languageName: node
-  linkType: hard
-
 "de-indent@npm:^1.0.2":
   version: 1.0.2
   resolution: "de-indent@npm:1.0.2"
@@ -2948,7 +2928,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:^4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.4, debug@npm:^4.3.5":
   version: 4.3.5
   resolution: "debug@npm:4.3.5"
   dependencies:
@@ -3055,23 +3035,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.4.668":
-  version: 1.4.795
-  resolution: "electron-to-chromium@npm:1.4.795"
-  checksum: 7a26fe5a0144085a90234d532560763d988ae3175514ffd18e3b6882096d8f877f71198180a8a7fe15858e485bb57406611c91e2c6b3bf4e8da446dc39a88a4f
+"electron-to-chromium@npm:^1.4.796":
+  version: 1.4.802
+  resolution: "electron-to-chromium@npm:1.4.802"
+  checksum: a7e2daefe1f0b3af7b5986b5ce33f4452666d74a1f07a08dcc2cef8afdffbf00f6631f05e76eb526f1c17fd8bcd4b3134d2d936c847c271120ee397f4aaf6553
   languageName: node
   linkType: hard
 
 "electron@npm:^30.1.0":
-  version: 30.1.0
-  resolution: "electron@npm:30.1.0"
+  version: 30.1.1
+  resolution: "electron@npm:30.1.1"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: e17c5fdf275f8cd457086adfa05db7507d08dd9264024d80eae8e55eb01927d062b63223a1a15b3ac024ebe2c34cc4b3ceb5cc0ac3ded4721c4ac9be4e5fe33c
+  checksum: 85cfdf085f5b5d150f33b202519c171fd37de46075adeca919f61137ee9b43a37db2ffb4d7b089ecf6d8a19ac640a54555d5afc685f19d89a08cdc9522549de3
   languageName: node
   linkType: hard
 
@@ -5095,13 +5075,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.8.1":
-  version: 1.8.1
-  resolution: "shell-quote@npm:1.8.1"
-  checksum: 8cec6fd827bad74d0a49347057d40dfea1e01f12a6123bf82c4649f3ef152fc2bc6d6176e6376bffcd205d9d0ccb4f1f9acae889384d20baff92186f01ea455a
-  languageName: node
-  linkType: hard
-
 "signal-exit@npm:^3.0.2":
   version: 3.0.7
   resolution: "signal-exit@npm:3.0.7"
@@ -5117,13 +5090,13 @@ __metadata:
   linkType: hard
 
 "simple-git@npm:^3.24.0":
-  version: 3.24.0
-  resolution: "simple-git@npm:3.24.0"
+  version: 3.25.0
+  resolution: "simple-git@npm:3.25.0"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
-    debug: "npm:^4.3.4"
-  checksum: 4329e5be1a7af1ebb476354ed6edf6d2828dc221e15d22ce3e5e8028f537d5e9ac059d813911516f78e22dfa2ee4db4c8cf30bf912bd284e530b733bd6b5c3a0
+    debug: "npm:^4.3.5"
+  checksum: 2087dddac041eac6330cbb7fafea21f3e45786ea54e50ae07a49ba6a7134298e12727e5e4b6580310b679c7cb4f2a83804c04e7eab247eeabcd48d33b7885e16
   languageName: node
   linkType: hard
 
@@ -5214,13 +5187,6 @@ __metadata:
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: ab55398007c5e5532957cb0beee2368529618ac0ab372d789806f5718123cc4367d57de3904b4e6a4170eb5a0b0f41373066d02ca0735a0c4d75c7d328d3e011
-  languageName: node
-  linkType: hard
-
-"spawn-command@npm:0.0.2":
-  version: 0.0.2
-  resolution: "spawn-command@npm:0.0.2"
-  checksum: b22f2d71239e6e628a400831861ba747750bbb40c0a53323754cf7b84330b73d81e40ff1f9055e6d1971818679510208a9302e13d9ff3b32feb67e74d7a1b3ef
   languageName: node
   linkType: hard
 
@@ -5361,7 +5327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^8.1.1, supports-color@npm:~8.1.1":
+"supports-color@npm:~8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
   dependencies:
@@ -5459,15 +5425,6 @@ __metadata:
   bin:
     nodetouch: bin/nodetouch.js
   checksum: d2e4d269a42c846a22a29065b9af0b263de58effc85a1764bb7a2e8fc4b47700e9e2fcbd7eb1f5bffbb7c73d860f93600cef282b93ddac8f0b62321cb498b36e
-  languageName: node
-  linkType: hard
-
-"tree-kill@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "tree-kill@npm:1.2.2"
-  bin:
-    tree-kill: cli.js
-  checksum: 7b1b7c7f17608a8f8d20a162e7957ac1ef6cd1636db1aba92f4e072dc31818c2ff0efac1e3d91064ede67ed5dc57c565420531a8134090a12ac10cf792ab14d2
   languageName: node
   linkType: hard
 
@@ -5602,7 +5559,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"update-browserslist-db@npm:^1.0.13":
+"update-browserslist-db@npm:^1.0.16":
   version: 1.0.16
   resolution: "update-browserslist-db@npm:1.0.16"
   dependencies:
@@ -5833,7 +5790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:17.7.2, yargs@npm:^17.7.2":
+"yargs@npm:17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
