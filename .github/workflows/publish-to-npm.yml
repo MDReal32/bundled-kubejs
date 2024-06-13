@@ -25,23 +25,23 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - run: corepack enable
-        if: steps.calculate-hash.outputs.changed == 'true'
+      - name: Enable yarn
+        run: corepack enable
 
-      - run: yarn
-        if: steps.calculate-hash.outputs.changed == 'true'
+      - name: Install dependencies
+        run: yarn
 
-      - run: yarn workspace @kubejs/${{ matrix.package_name }} prepare
-        if: steps.calculate-hash.outputs.changed == 'true'
+      - name: Preparation
+        run: yarn workspace @kubejs/${{ matrix.package_name }} prepare
         continue-on-error: true
 
-      - run: yarn workspace @kubejs/${{ matrix.package_name }} build
-        if: steps.calculate-hash.outputs.changed == 'true'
+      - name: Build @kubejs/${{ matrix.package_name }} app
+        run: yarn workspace @kubejs/${{ matrix.package_name }} build
 
-      - run: |
+      - name: Publish @kubejs/${{ matrix.package_name }}
+        run: |
           sed -i 's/\$NODE_AUTH_TOKEN/${NODE_AUTH_TOKEN}/g' .yarnrc.yml
           yarn workspace @kubejs/${{ matrix.package_name }} publish:me
-        if: steps.calculate-hash.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: true
