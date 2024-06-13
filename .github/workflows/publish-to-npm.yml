@@ -25,42 +25,6 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Restore hash from cache
-        id: restore-cache
-        uses: actions/cache@v2
-        with:
-          path: .folder_hash
-          key: :::app-hash:@kubejs/${{ matrix.package_name }}
-
-      - name: Calculate folder hash
-        id: calculate-hash
-        run: |
-          FOLDER_TO_HASH="kubejs/${{ matrix.package_name }}"
-          HASH_FILE=".folder_hash"
-          
-          # Calculate the current hash
-          CURRENT_HASH=$(find "$FOLDER_TO_HASH" -type f -exec sha256sum {} \; | sort -k 2 | sha256sum | awk '{ print $1 }')
-          echo "Current hash: $CURRENT_HASH"
-          
-          # Load the saved hash
-          if [[ -f $HASH_FILE ]]; then
-            SAVED_HASH=$(cat $HASH_FILE)
-          else
-            SAVED_HASH=null
-          fi
-          
-          echo "Saved hash: $SAVED_HASH"
-          
-          # Compare hashes
-          if [[ "$CURRENT_HASH" != "$SAVED_HASH" ]]; then
-            echo "Folder has changed."
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "$CURRENT_HASH" > $HASH_FILE
-          else
-            echo "Folder has not changed."
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
       - run: corepack enable
         if: steps.calculate-hash.outputs.changed == 'true'
 
@@ -80,10 +44,4 @@ jobs:
         if: steps.calculate-hash.outputs.changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Save updated hash to cache
-        if: steps.calculate-hash.outputs.changed == 'true'
-        uses: actions/cache@v2
-        with:
-          path: .folder_hash
-          key: :::app-hash:@kubejs/${{ matrix.package_name }}
+        continue-on-error: true
