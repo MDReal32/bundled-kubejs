@@ -24,6 +24,7 @@
   ],
   "scripts": {
     "build": "vite build",
+    "prepare": "yarn workspace @kubejs/core build",
     "prepublishOnly": "yarn build",
     "publish:me": "npm publish --access public",
     "watch": "vite build --watch"

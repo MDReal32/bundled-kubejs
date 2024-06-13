@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "build": "vite build",
+    "prepare": "yarn workspace @kubejs/core build",
     "prepublishOnly": "yarn build",
     "publish:me": "npm publish --access public",
     "start:dev": "nodemon build/dev.js -- generate -n sample-project -v 1.0.0 -m 1.18.2 -t forge -p sample-project",

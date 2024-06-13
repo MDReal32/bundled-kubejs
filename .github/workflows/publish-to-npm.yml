@@ -67,6 +67,10 @@ jobs:
       - run: yarn
         if: steps.calculate-hash.outputs.changed == 'true'
 
+      - run: yarn workspace @kubejs/${{ matrix.package_name }} prepare
+        if: steps.calculate-hash.outputs.changed == 'true'
+        continue-on-error: true
+
       - run: yarn workspace @kubejs/${{ matrix.package_name }} build
         if: steps.calculate-hash.outputs.changed == 'true'
 
