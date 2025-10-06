@@ -40,3 +40,4 @@ jobs:
           yarn workspace @kubejs/${{ matrix.package_name }} publish:me
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true

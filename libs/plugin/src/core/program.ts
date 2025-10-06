@@ -24,7 +24,7 @@ interface PackOptions {
 export class Program<TArgs extends Args> {
   private readonly vite;
 
-  constructor(public args: TArgs) {
+  constructor(private readonly args: TArgs) {
     this.vite = new Vite(args);
   }
 

@@ -25,7 +25,7 @@ export class Vite<TArgs extends Args> {
     startup: { state: AppState.PREPARING }
   };
 
-  constructor(public args: TArgs) {}
+  constructor(private readonly args: TArgs) {}
 
   async resolveConfig() {
     const possibleViteConfigFiles = [
@@ -93,13 +93,15 @@ export class Vite<TArgs extends Args> {
       "Dear kubejs developer, we are preparing the environment for you. Please wait..."
     );
     await this.programmaticallyPause();
-    const modsDir = resolve(process.cwd(), "mods");
+    const modsDir = resolve(this.args.root!, "mods");
     if (!existsSync(modsDir)) {
-      this.logger.error(`Please setup project on root directory of minecraft forge project.`);
+      this.logger.error(
+        `Please setup project on root directory of minecraft forge project or set --root option as root of forge project.`
+      );
       process.exit(1);
     }
 
-    const probeGeneratedDir = resolve(process.cwd(), "kubejs/probe/generated");
+    const probeGeneratedDir = resolve(this.args.root!, "kubejs/probe/generated");
     const files = existsSync(probeGeneratedDir) ? await readdir(probeGeneratedDir) : [];
     if (files.length === 0) {
       console.warn(
@@ -141,7 +143,7 @@ export class Vite<TArgs extends Args> {
       {
         build: {
           emptyOutDir: false,
-          outDir: resolve(process.cwd(), "kubejs"),
+          outDir: resolve(this.args.root!, "kubejs"),
           lib: {
             name: `kubejs-scripts:${entry}`,
             fileName(_, entry) {
@@ -183,7 +185,8 @@ export class Vite<TArgs extends Args> {
   async patch() {
     const promises = entries.map(async entry => {
       // Load the file and split the lines
-      const file = `kubejs/${entry}_scripts/script.js`;
+      const file = resolve(this.args.root!, `kubejs/${entry}_scripts/script.js`);
+      console.log("file", file);
 
       const content = await readFile(file, "utf-8");
       const lines = content.split("\n");

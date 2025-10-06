@@ -1,3 +1,5 @@
+import { resolve } from "node:path";
+
 import _ from "lodash";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -10,8 +12,13 @@ export const cli = async (argv = hideBin(process.argv)) => {
     .command(
       "build",
       "Build the project",
-      yargs => yargs.option("watch", { alias: "w", type: "boolean", default: false }),
+      yargs =>
+        yargs
+          .option("root", { alias: "r", type: "string" })
+          .option("watch", { alias: "w", type: "boolean", default: false }),
       async argv => {
+        argv.root = argv.root ? resolve(process.cwd(), argv.root) : process.cwd();
+        console.log(argv.root);
         const program = new Program(_.omit(argv, ["_", "$0"]));
         await program.execute();
       }
