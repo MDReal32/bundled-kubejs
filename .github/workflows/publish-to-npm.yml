@@ -37,7 +37,7 @@ jobs:
       - name: Publish @kubejs/${{ matrix.package_name }}
         run: |
           sed -i 's/\$NODE_AUTH_TOKEN/${NODE_AUTH_TOKEN}/g' .yarnrc.yml
-          yarn workspace @kubejs/${{ matrix.package_name }} publish-me
+          yarn workspace @kubejs/${{ matrix.package_name }} publish:me
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: true
