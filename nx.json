@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build", "^vite:build"],
+      "outputs": ["{projectRoot}/build"],
+      "cache": true
+    },
+    "watch": {
+      "dependsOn": ["^vite:build"],
+      "outputs": ["{projectRoot}/build"]
+    },
+    "kubejs:generator": {
+      "dependsOn": ["^vite:build"],
+      "outputs": ["{projectRoot}/build"]
+    }
+  },
+  "defaultBase": "master",
+  "plugins": [
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "vite:build",
+        "testTargetName": "test",
+        "serveTargetName": "serve",
+        "devTargetName": "dev",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "typecheckTargetName": "typecheck",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
+    }
+  ]
+}

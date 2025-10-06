@@ -4,11 +4,12 @@ import { hideBin } from "yargs/helpers";
 
 import { ModLoaderType, TemplateGenerateOptions } from "@kubejs/core";
 
+import pkg from "../package.json" with { type: "json" };
 import { generate } from "./core/generate";
 import { migrate } from "./core/migrate";
 import { Templates } from "./utils/templates";
 
-export const main = async () => {
+const main = async () => {
   const templates = new Templates();
   await templates.prepare();
 
@@ -82,5 +83,14 @@ export const main = async () => {
         }
       }
     )
+    .scriptName("kubejs-generator")
+    .strict()
+    .strictOptions()
+    .strictCommands()
+    .help()
+    .version(pkg.version)
+    .demandCommand(1, "You need to call one of the given commands or options.")
     .parse();
 };
+
+await main();

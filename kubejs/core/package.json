@@ -20,18 +20,17 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "build": "vite build",
     "prepublishOnly": "yarn build",
     "publish:me": "yarn npm publish --access public",
     "watch": "vite build --watch"
   },
   "dependencies": {
     "archiver": "^7.0.1",
-    "electron": "^30.1.0",
+    "electron": "^38.2.1",
     "temp-dir": "^3.0.0"
   },
   "devDependencies": {
-    "typescript": "5.4.5",
-    "vite": "5.2.13"
+    "typescript": "5.9.3",
+    "vite": "7.1.9"
   }
 }

@@ -1,5 +1,6 @@
 export enum ModLoaderType {
   FORGE = 1,
   FABRIC = 4,
-  QUILT = 5
+  QUILT = 5,
+  NEOFORGE = 6
 }

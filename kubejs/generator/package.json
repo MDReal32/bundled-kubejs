@@ -11,43 +11,39 @@
   "main": "build/main.js",
   "types": "build/main.d.ts",
   "bin": {
-    "kubejs": "bin/generator.js"
+    "kubejs-generator": "bin/generator.js"
   },
   "files": [
     "build",
     "bin",
-    "template"
+    "templates"
   ],
   "scripts": {
-    "build": "vite build",
-    "prepare": "yarn workspace @kubejs/core build",
     "prepublishOnly": "yarn build",
     "publish:me": "yarn npm publish --access public",
-    "start:dev": "nodemon build/dev.js -- generate -n sample-project -v 1.0.0 -m 1.18.2 -t forge -p sample-project",
     "watch": "vite build --watch"
   },
   "dependencies": {
+    "@inquirer/prompts": "^7.8.6",
     "@kubejs/core": "workspace:^",
     "ejs": "3.1.10",
-    "inquirer": "^9.2.23",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.2.2",
-    "simple-git": "^3.24.0",
-    "yaml": "^2.4.5",
-    "yargs": "17.7.2",
-    "yarn": "^1.22.22",
-    "zod": "^3.23.8"
+    "semver": "^7.7.2",
+    "simple-git": "^3.28.0",
+    "yaml": "^2.8.1",
+    "yargs": "18.0.0",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@types/archiver": "^6.0.2",
+    "@types/archiver": "^6.0.3",
     "@types/ejs": "^3.1.5",
-    "@types/inquirer": "^9.0.7",
-    "@types/lodash": "^4.17.5",
-    "@types/node": "^20.14.2",
-    "@types/yargs": "17.0.32",
-    "nodemon": "^3.1.3",
-    "typescript": "5.4.5",
-    "vite": "5.2.13"
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^24.7.0",
+    "@types/semver": "^7.7.1",
+    "@types/yargs": "17.0.33",
+    "typescript": "5.9.3",
+    "vite": "7.1.9"
   },
   "packageManager": "yarn@4.0.2"
 }

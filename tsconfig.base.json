@@ -3,30 +3,24 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
-
-    /* Bundler */
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-
     "baseUrl": "./",
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
     "sourceMap": true,
-
     "paths": {
       "@kubejs/core": ["./kubejs/core/src/main.ts"],
       "@kubejs/core/dialog": ["./kubejs/core/src/dialog.ts"],
-      "@kubejs/plugin": ["./kubejs/plugin/src/main.ts"],
-      "@kubejs/generator": ["./kubejs/generator/src/main.ts"]
+      "@kubejs/generator": ["./kubejs/generator/src/main.ts"],
+      "@kubejs/plugin": ["./kubejs/plugin/src/main.ts"]
     }
   }
 }

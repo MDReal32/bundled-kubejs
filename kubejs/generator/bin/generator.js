@@ -1,3 +1,1 @@
-import { main } from "../build/main.js";
-
-await main();
+import "../build/main.js";

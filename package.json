@@ -12,14 +12,26 @@
     "kubejs/*"
   ],
   "scripts": {
-    "dev:act": "gh act --secret-file .env"
+    "dev:act": "gh act --secret-file .env",
+    "generate:1.18.2:forge": "yarn kubejs:generator generate -n sample-project-1.18.2-forge -v 1.0.0 -m 1.18.2 -t forge -p sample",
+    "generate:1.18.2:neoforge": "yarn kubejs:generator generate -n sample-project-1.18.2-neoforge -v 1.0.0 -m 1.18.2 -t neoforge -p sample",
+    "generate:1.21.1:forge": "yarn kubejs:generator generate -n sample-project-1.21.1-forge -v 1.0.0 -m 1.21.1 -t forge -p sample",
+    "generate:1.21.1:neoforge": "yarn kubejs:generator generate -n sample-project-1.21.1-neoforge -v 1.0.0 -m 1.21.1 -t neoforge -p sample",
+    "kubejs:generator": "vite-node kubejs/generator/src/main.ts"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "4.3.0",
-    "@types/node": "^20.14.2",
-    "prettier": "^3.3.1",
-    "prettier-plugin-packagejson": "^2.5.0",
-    "typescript": "^5.4.5"
+    "@nx/vite": "21.6.3",
+    "@nx/web": "21.6.3",
+    "@trivago/prettier-plugin-sort-imports": "5.2.2",
+    "@types/node": "^24.7.0",
+    "@vitest/ui": "^3.0.0",
+    "nx": "21.6.3",
+    "prettier": "^3.6.2",
+    "prettier-plugin-packagejson": "^2.5.19",
+    "typescript": "^5.9.3",
+    "vite": "^7.0.0",
+    "vite-node": "^3.2.4",
+    "vitest": "^3.0.0"
   },
   "packageManager": "yarn@4.0.2"
 }

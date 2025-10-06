@@ -7,7 +7,9 @@ import { Logger } from "@kubejs/core";
 import { TemplateConfig } from "../types/template-config";
 import { Template } from "./template";
 
-export type TemplatesConfig = Record<string, TemplateConfig>;
+const __dirname = dirname(new URL(import.meta.url).pathname);
+
+export interface TemplatesConfig extends Record<string, TemplateConfig> {}
 
 export class Templates {
   private readonly __templates: TemplatesConfig = {};
@@ -19,9 +21,23 @@ export class Templates {
 
   async prepare() {
     const require = createRequire(import.meta.url);
-    const basePath = require.resolve("@kubejs/generator");
+    let basePath: string = null!;
 
-    const root = resolve(dirname(dirname(basePath)), "template");
+    try {
+      basePath = require.resolve("@kubejs/generator");
+    } catch (e) {
+      if (e instanceof Error && e.message.includes("Cannot find module")) {
+        const { loadConfig } = await import("tsconfig-paths");
+        const result = loadConfig(__dirname);
+        if (result.resultType === "failed") {
+          throw e;
+        }
+
+        basePath = resolve(result.absoluteBaseUrl, result.paths["@kubejs/generator"][0]);
+      }
+    }
+
+    const root = resolve(dirname(dirname(basePath)), "templates");
     for (const template of await readdir(root)) {
       const templateRoot = resolve(root, template);
       let templateJsonSource: string;
