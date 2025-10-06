@@ -186,7 +186,6 @@ export class Vite<TArgs extends Args> {
     const promises = entries.map(async entry => {
       // Load the file and split the lines
       const file = resolve(this.args.root!, `kubejs/${entry}_scripts/script.js`);
-      console.log("file", file);
 
       const content = await readFile(file, "utf-8");
       const lines = content.split("\n");
