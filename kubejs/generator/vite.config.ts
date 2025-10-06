@@ -6,7 +6,7 @@ export default defineConfig({
     outDir: "build",
     lib: {
       name: "KubeJS/Generator",
-      entry: { main: "src/main.ts", dev: "src/dev.ts" },
+      entry: { main: "src/main.ts" },
       fileName: "[name].js",
       formats: ["es"]
     },
