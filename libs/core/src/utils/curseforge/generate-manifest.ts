@@ -1,4 +1,4 @@
-import { CfFile, CfManifest, CfMod, TemplateGenerateOptions } from "../../types";
+import type { CfFile, CfManifest, CfMod, TemplateGenerateOptions } from "../../types";
 import { getLatestModloaderForVersion } from "../minecraft";
 import { resolveMods } from "./resolve-mods";
 

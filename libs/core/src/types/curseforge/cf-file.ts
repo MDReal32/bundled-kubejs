@@ -1,4 +1,4 @@
-import { Dependency, Hash, Module, SortableGameVersion } from "./cf";
+import type { Dependency, Hash, Module, SortableGameVersion } from "./cf";
 
 export interface CfFile {
   id: number;

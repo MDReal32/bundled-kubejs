@@ -261,7 +261,7 @@ rhino.local.properties
 !mods/*.jar
 
 # Packages
-kubejs/*/build
+libs/*/build
 
 
 

@@ -1,4 +1,4 @@
-import { File, Minecraft } from ".";
+import type { File, Minecraft } from ".";
 
 export interface CfMinecraftInstance {
   baseModLoader: BaseModLoader;

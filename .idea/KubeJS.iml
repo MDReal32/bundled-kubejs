@@ -8,7 +8,6 @@
       <excludeFolder url="file://$MODULE_DIR$/.yarn" />
       <excludeFolder url="file://$MODULE_DIR$/defaultconfigs" />
       <excludeFolder url="file://$MODULE_DIR$/downloads" />
-      <excludeFolder url="file://$MODULE_DIR$/kubejs/*/build" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
       <excludeFolder url="file://$MODULE_DIR$/resourcepacks" />
       <excludeFolder url="file://$MODULE_DIR$/saves" />
@@ -16,6 +15,7 @@
       <excludeFolder url="file://$MODULE_DIR$/samples/*/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/samples/*/config" />
       <excludeFolder url="file://$MODULE_DIR$/samples/*/mods" />
+      <excludeFolder url="file://$MODULE_DIR$/libs/*/build" />
       <excludePattern pattern="minecraftinstance.json" />
       <excludePattern pattern="rhino.local.properties" />
       <excludePattern pattern="user*cache.json" />

@@ -1990,21 +1990,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kubejs/core@workspace:^, @kubejs/core@workspace:kubejs/core":
+"@kubejs/core@workspace:^, @kubejs/core@workspace:libs/core":
   version: 0.0.0-use.local
-  resolution: "@kubejs/core@workspace:kubejs/core"
+  resolution: "@kubejs/core@workspace:libs/core"
   dependencies:
     archiver: "npm:^7.0.1"
     electron: "npm:^38.2.1"
     temp-dir: "npm:^3.0.0"
     typescript: "npm:5.9.3"
     vite: "npm:7.1.9"
+    vite-tsconfig-paths: "npm:^5.1.4"
   languageName: unknown
   linkType: soft
 
-"@kubejs/generator@workspace:kubejs/generator":
+"@kubejs/generator@workspace:libs/generator":
   version: 0.0.0-use.local
-  resolution: "@kubejs/generator@workspace:kubejs/generator"
+  resolution: "@kubejs/generator@workspace:libs/generator"
   dependencies:
     "@inquirer/prompts": "npm:^7.8.6"
     "@kubejs/core": "workspace:^"
@@ -2021,6 +2022,7 @@ __metadata:
     simple-git: "npm:^3.28.0"
     typescript: "npm:5.9.3"
     vite: "npm:7.1.9"
+    vite-tsconfig-paths: "npm:^5.1.4"
     yaml: "npm:^2.8.1"
     yargs: "npm:18.0.0"
     zod: "npm:^4.1.11"
@@ -2048,9 +2050,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kubejs/plugin@workspace:^, @kubejs/plugin@workspace:kubejs/plugin":
+"@kubejs/plugin@workspace:^, @kubejs/plugin@workspace:libs/plugin":
   version: 0.0.0-use.local
-  resolution: "@kubejs/plugin@workspace:kubejs/plugin"
+  resolution: "@kubejs/plugin@workspace:libs/plugin"
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@babel/preset-env": "npm:^7.28.3"

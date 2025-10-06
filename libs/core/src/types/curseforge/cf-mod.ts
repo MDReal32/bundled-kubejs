@@ -1,4 +1,4 @@
-import { CfFile } from "./cf-file";
+import type { CfFile } from "./cf-file";
 
 export interface CfMod {
   id: number;

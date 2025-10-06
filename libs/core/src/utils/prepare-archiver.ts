@@ -5,13 +5,13 @@ import { dirname, resolve } from "node:path";
 
 import tempDir from "temp-dir";
 
-import { Archiver } from "../helpers";
-import { TemplateGenerateOptions } from "../types";
-import { Logger } from "../utils";
+import { Archiver } from "../core";
+import type { TemplateGenerateOptions } from "../types";
+import { Logger } from "./index";
 
-export async function prepareArchiver(
+export const prepareArchiver = async (
   options: Pick<TemplateGenerateOptions, "name" | "tmpDestination">
-) {
+) => {
   const logger = new Logger("KubeJS Core/Archive Preloader");
   const key = randomBytes(4).toString("hex");
 
@@ -27,4 +27,4 @@ export async function prepareArchiver(
 
   logger.info(`Preparing archiver at ${options.tmpDestination}.zip`);
   return new Archiver(`${options.tmpDestination}.zip`);
-}
+};

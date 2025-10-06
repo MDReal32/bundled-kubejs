@@ -1,4 +1,4 @@
-import { TemplateGenerateOptions } from "../../types";
+import type { TemplateGenerateOptions } from "../../types";
 import { resolveMods } from "./resolve-mods";
 
 export const generateModListHtml = async (

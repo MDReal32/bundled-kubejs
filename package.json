@@ -8,8 +8,8 @@
   },
   "type": "module",
   "workspaces": [
-    "samples/*",
-    "kubejs/*"
+    "libs/*",
+    "samples/*"
   ],
   "scripts": {
     "dev:act": "gh act --secret-file .env",
@@ -17,7 +17,7 @@
     "generate:1.18.2:neoforge": "yarn kubejs:generator generate -n sample-project-1.18.2-neoforge -v 1.0.0 -m 1.18.2 -t neoforge -p sample",
     "generate:1.21.1:forge": "yarn kubejs:generator generate -n sample-project-1.21.1-forge -v 1.0.0 -m 1.21.1 -t forge -p sample",
     "generate:1.21.1:neoforge": "yarn kubejs:generator generate -n sample-project-1.21.1-neoforge -v 1.0.0 -m 1.21.1 -t neoforge -p sample",
-    "kubejs:generator": "vite-node kubejs/generator/src/main.ts"
+    "kubejs:generator": "vite-node libs/generator/src/main.ts"
   },
   "devDependencies": {
     "@nx/vite": "21.6.3",

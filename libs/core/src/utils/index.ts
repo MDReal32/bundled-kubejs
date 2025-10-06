@@ -4,3 +4,4 @@ export * from "./minecraft";
 
 export * from "./queue";
 export * from "./save-dialog";
+export * from "./prepare-archiver";

@@ -1,5 +1,5 @@
 import { cfFetch } from "../../api";
-import { CfFile, CfMod, ModLoaderType } from "../../types";
+import { type CfFile, type CfMod, ModLoaderType } from "../../types";
 import { Logger } from "../logger";
 import { queue } from "../queue";
 

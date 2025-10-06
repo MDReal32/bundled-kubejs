@@ -43,7 +43,8 @@
     "@types/semver": "^7.7.1",
     "@types/yargs": "17.0.33",
     "typescript": "5.9.3",
-    "vite": "7.1.9"
+    "vite": "7.1.9",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "packageManager": "yarn@4.0.2"
 }

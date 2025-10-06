@@ -9,10 +9,10 @@
   },
   "type": "module",
   "exports": {
-    ".": "./build/core.js",
+    ".": "./build/main.js",
     "./dialog": "./build/dialog.js"
   },
-  "main": "build/core.js",
+  "main": "build/main.js",
   "types": "build/main.d.ts",
   "files": [
     "build",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "typescript": "5.9.3",
-    "vite": "7.1.9"
+    "vite": "7.1.9",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }
