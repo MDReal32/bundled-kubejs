@@ -14,7 +14,7 @@ declare module "rollup" {
 /**
  * Counts unique modules that Rollup parses for a given envName.
  */
-export const statsPlugin = (root: string, logger: Logger): Plugin => {
+export const statsPlugin = (logger: Logger): Plugin => {
   const buckets = new Map<string, Set<string>>();
 
   const bucket = (file: string) => {
@@ -32,7 +32,7 @@ export const statsPlugin = (root: string, logger: Logger): Plugin => {
       }
 
       const input = options.input[0];
-      this.meta.entryFile = input.replace(root + "/", "");
+      this.meta.entryFile = input.replace(process.cwd() + "/", "");
       const file = this.meta.entryFile.slice(4);
       if (file.match(/^(client|server|startup)/)) {
         this.meta.entry = file.replace(extname(file), "");

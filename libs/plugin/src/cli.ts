@@ -18,8 +18,13 @@ export const cli = async (argv = hideBin(process.argv)) => {
           .option("watch", { alias: "w", type: "boolean", default: false }),
       async argv => {
         argv.root = argv.root ? resolve(process.cwd(), argv.root) : process.cwd();
-        const program = new Program(_.omit(argv, ["_", "$0"]));
-        await program.execute();
+        try {
+          const program = new Program(_.omit(argv, ["_", "$0"]));
+          await program.execute();
+        } catch (e) {
+          console.error(e);
+          process.exit(1);
+        }
       }
     )
     .command(
@@ -31,8 +36,13 @@ export const cli = async (argv = hideBin(process.argv)) => {
           .option("outfile", { alias: "o", type: "string" })
           .option("outdir", { alias: "d", type: "string" }),
       async argv => {
-        const program = new Program(_.omit(argv, ["_", "$0"]));
-        await program.pack({ outfile: argv.outfile, outdir: argv.outdir });
+        try {
+          const program = new Program(_.omit(argv, ["_", "$0"]));
+          await program.pack({ outfile: argv.outfile, outdir: argv.outdir });
+        } catch (e) {
+          console.error(e);
+          process.exit(1);
+        }
       }
     )
     .scriptName("kubejs")

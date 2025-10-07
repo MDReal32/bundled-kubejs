@@ -113,12 +113,15 @@ export class Vite<TArgs extends Args> {
   private getEntries() {
     return entries.reduce((acc, entry) => {
       acc[entry] ||= [];
-      acc[entry].push([
-        `src/${entry}.ts`,
-        relative(process.cwd(), resolve(`${entry}_scripts/main`))
-      ]);
 
-      glob.sync("**/*.ts", { cwd: resolve(this.root, "src", entry), nodir: true }).forEach(file => {
+      if (existsSync(resolve(`src/${entry}.ts`))) {
+        acc[entry].push([
+          `src/${entry}.ts`,
+          relative(process.cwd(), resolve(`${entry}_scripts/main`))
+        ]);
+      }
+
+      glob.sync("**/*.ts", { cwd: resolve("src", entry), nodir: true }).forEach(file => {
         if (file === ".") return;
         const entryFile = `src/${entry}/${file}`;
         const outFile = relative(
@@ -193,6 +196,12 @@ export class Vite<TArgs extends Args> {
     const entryPoints = [...entries.client, ...entries.server, ...entries.startup];
     const envNames = new Set<string>();
 
+    if (!entryPoints.length) {
+      throw new Error(
+        "Failed to initialize build: no entry points detected. Please ensure that client, server, or startup entries are defined."
+      );
+    }
+
     // Map entryPoints → environments
     const environments = entryPoints.reduce(
       (acc, [entryFile, outFile]) => {
@@ -221,7 +230,8 @@ export class Vite<TArgs extends Args> {
 
     const baseConfig = _.merge<UserConfig, UserConfig>(
       {
-        plugins: [swcPlugin(), statsPlugin(this.root, this.logger)],
+        root: process.cwd(),
+        plugins: [swcPlugin(), statsPlugin(this.logger)],
         esbuild: false,
         build: {
           emptyOutDir: false,
