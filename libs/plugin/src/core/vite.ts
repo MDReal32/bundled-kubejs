@@ -24,7 +24,6 @@ type Entries = Record<Entry, [string, string][]>;
 export class Vite<TArgs extends Args> {
   private readonly logger = new Logger("KubeJS Plugin/Compiler");
   private readonly appStates = new Map<string, App>();
-  private _currentEnvName = "unknown";
 
   constructor(private readonly args: TArgs) {}
 
@@ -72,17 +71,29 @@ export class Vite<TArgs extends Args> {
 
     // Watch for entry topology changes (new/removed files under src/**)
     const srcRoot = resolve(this.root, "src");
-    const watcher = chokidar.watch(
-      [`${srcRoot}/client/**/*`, `${srcRoot}/server/**/*`, `${srcRoot}/startup/**/*`],
-      {
-        ignoreInitial: true,
-        awaitWriteFinish: { stabilityThreshold: 150, pollInterval: 50 }
-      }
-    );
+    const entryFiles = [
+      `${srcRoot}/client.ts`,
+      `${srcRoot}/client`,
+      `${srcRoot}/server.ts`,
+      `${srcRoot}/server`,
+      `${srcRoot}/startup.ts`,
+      `${srcRoot}/startup`
+    ];
+
+    const watcher = chokidar.watch(entryFiles, {
+      ignoreInitial: true,
+      persistent: true,
+      awaitWriteFinish: { stabilityThreshold: 150, pollInterval: 50 },
+      depth: Infinity
+    });
 
     const refresh = debounce(async () => {
       try {
         this.logger.info("Entry graph change detected. Refreshing builder…");
+
+        await rm(resolve(this.root, "kubejs/client_scripts"), { recursive: true, force: true });
+        await rm(resolve(this.root, "kubejs/server_scripts"), { recursive: true, force: true });
+        await rm(resolve(this.root, "kubejs/startup_scripts"), { recursive: true, force: true });
 
         // Recompute entries map
         currentEntries = this.getEntries();
@@ -100,9 +111,6 @@ export class Vite<TArgs extends Args> {
     }, 200);
 
     watcher.on("add", refresh).on("unlink", refresh).on("addDir", refresh).on("unlinkDir", refresh);
-
-    // Optional: keep process alive explicitly (useful in some CLIs)
-    process.stdin.resume();
   }
 
   private getEntries() {
@@ -113,12 +121,12 @@ export class Vite<TArgs extends Args> {
         relative(process.cwd(), resolve(`${entry}_scripts/main`))
       ]);
 
-      glob.sync("**", { cwd: resolve(this.root, "src", entry), nodir: true }).forEach(file => {
+      glob.sync("**/*.ts", { cwd: resolve(this.root, "src", entry), nodir: true }).forEach(file => {
         if (file === ".") return;
         const entryFile = `src/${entry}/${file}`;
         const outFile = relative(
           process.cwd(),
-          resolve(`${entry}_scripts`, basename(file, extname(file)))
+          resolve(`${entry}_scripts`, dirname(file), basename(file, extname(file)))
         );
         acc[entry].push([entryFile, outFile]);
       });
@@ -215,10 +223,9 @@ export class Vite<TArgs extends Args> {
       {} as Record<string, EnvironmentOptions>
     );
 
-    const self = this;
     const baseConfig = _.merge<UserConfig, UserConfig>(
       {
-        plugins: [swcPlugin(), statsPlugin(() => this._currentEnvName, this.logger)],
+        plugins: [swcPlugin(), statsPlugin(this.root, this.logger)],
         esbuild: false,
         build: {
           emptyOutDir: false,
@@ -232,9 +239,9 @@ export class Vite<TArgs extends Args> {
           async buildApp(builder) {
             for (const envName of envNames) {
               try {
-                self._currentEnvName = envName;
-                await builder.build(builder.environments[envName.replace(/[^\w_$]/, "$")]);
+                await builder.build(builder.environments[envName.replace(/[^\w_$]/g, "$")]);
               } catch (e) {
+                console.log(e);
                 // swallow per-env build errors; you'll still see them in Vite output
               }
             }
