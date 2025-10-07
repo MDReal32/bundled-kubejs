@@ -1,43 +1,115 @@
 name: Publish to NPM
-
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  publish:
-    name: Publish @kubejs/${{ matrix.package_name }}
+  prepare:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package_name:
-          - core
-          - plugin
-          - generator
+    outputs:
+      names: ${{ steps.collect.outputs.names }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Setup Node + Yarn
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
+      - run: corepack enable
+
+      - id: collect
+        run: |
+          set -euo pipefail
+          NAMES=$(
+            yarn workspaces list --json \
+              | jq -srcM '[.[]
+              | select(.location | startswith("libs"))
+              | .name
+              | select(startswith("@kubejs/"))
+              | sub("^@kubejs/"; "")]'
+          )
+          echo "Discovered packages: ${NAMES}"
+          echo "names=${NAMES}" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package_name: ${{ fromJSON(needs.prepare.outputs.names) }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Enable yarn
-        run: corepack enable
+      - run: corepack enable
+      - run: yarn --immutable
 
-      - name: Install dependencies
-        run: yarn
+      - name: Get package info
+        id: info
+        run: |
+          PKG="@kubejs/${{ matrix.package_name }}"
+          ROOT=$(yarn nx show project "$PKG" --json | jq -r '.root')
+          NAME=$(jq -r '.name' "$ROOT/package.json")
+          VERSION=$(jq -r '.version' "$ROOT/package.json")
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "root=$ROOT" >> $GITHUB_OUTPUT
 
-      - name: Build @kubejs/${{ matrix.package_name }} app
+      - name: Check npm & changes
+        id: check
+        run: |
+          set -e
+          NAME=${{ steps.info.outputs.name }}
+          VERSION=${{ steps.info.outputs.version }}
+          ROOT=${{ steps.info.outputs.root }}
+  
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "published=true" >> $GITHUB_OUTPUT
+          else
+            echo "published=false" >> $GITHUB_OUTPUT
+          fi
+  
+          git fetch --tags --quiet || true
+          LAST=$(git tag -l "$NAME@*" | sort -V | tail -n 1)
+          if [ -n "$LAST" ] && git diff --quiet "$LAST" -- "$ROOT"; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Decide
+        id: decide
+        run: |
+          PUB=${{ steps.check.outputs.published }}
+          CHG=${{ steps.check.outputs.changed }}
+          if [ "$PUB" = true ] && [ "$CHG" = false ]; then
+            echo "SKIP: already published, no changes"
+            echo "do=skip" >> $GITHUB_OUTPUT
+          elif [ "$PUB" = false ] && [ "$CHG" = false ]; then
+            echo "PUBLISH: new package (no changes)"
+            echo "do=publish" >> $GITHUB_OUTPUT
+          elif [ "$PUB" = false ] && [ "$CHG" = true ]; then
+            echo "PUBLISH: new package with changes"
+            echo "do=publish" >> $GITHUB_OUTPUT
+          else
+            echo "WARN: already published but changed → bump version"
+            echo "do=skip" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build
+        if: ${{ steps.decide.outputs.do == 'publish' }}
         run: yarn nx run @kubejs/${{ matrix.package_name }}:vite:build
 
-      - name: Publish @kubejs/${{ matrix.package_name }}
-        run: |
-          sed -i 's/\$NODE_AUTH_TOKEN/${NODE_AUTH_TOKEN}/g' .yarnrc.yml
-          yarn workspace @kubejs/${{ matrix.package_name }} publish:me
+      - name: Publish
+        if: ${{ steps.decide.outputs.do == 'publish' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        continue-on-error: true
+        run: |
+          sed -i 's/\$NODE_AUTH_TOKEN/${NODE_AUTH_TOKEN}/g' .yarnrc.yml || true
+          yarn workspace @kubejs/${{ matrix.package_name }} publish:me
