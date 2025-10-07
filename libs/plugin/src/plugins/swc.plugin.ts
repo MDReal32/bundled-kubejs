@@ -33,7 +33,7 @@ const swcConfigDefaults = {
   }
 };
 
-export function swcPlugin(): Plugin {
+export const swcPlugin = (): Plugin => {
   let swcConfig: any = swcConfigDefaults;
 
   return {
@@ -58,4 +58,4 @@ export function swcPlugin(): Plugin {
       return { code: ms.toString(), map: ms.generateMap({ source: id, hires: true }) };
     }
   };
-}
+};

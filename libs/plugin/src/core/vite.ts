@@ -12,8 +12,6 @@ import { Logger } from "@kubejs/core";
 
 import { statsPlugin } from "../plugins/stats.plugins";
 import { swcPlugin } from "../plugins/swc.plugin";
-import { App } from "../types/app";
-import { AppState } from "../types/app-states";
 import { Args } from "../types/args";
 import { Entry, entries } from "../types/entry";
 import { debounce } from "../utils/debounce";
@@ -23,7 +21,6 @@ type Entries = Record<Entry, [string, string][]>;
 
 export class Vite<TArgs extends Args> {
   private readonly logger = new Logger("KubeJS Plugin/Compiler");
-  private readonly appStates = new Map<string, App>();
 
   constructor(private readonly args: TArgs) {}
 
@@ -201,7 +198,6 @@ export class Vite<TArgs extends Args> {
       (acc, [entryFile, outFile]) => {
         const envName = entryFile.replace(/^src\/|\.ts$/g, "");
         envNames.add(envName);
-        this.appStates.set(envName, { state: AppState.INITIALIZING });
 
         acc[envName.replace(/[^\w_$]/g, "$")] = {
           build: {

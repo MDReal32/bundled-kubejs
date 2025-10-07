@@ -18,7 +18,8 @@ export default defineConfig({
         entryFileNames: "[name].js",
         chunkFileNames: "chunks/[name].js",
         assetFileNames: "assets/[name][extname]"
-      }
+      },
+      external: ["@kubejs/core"]
     },
     sourcemap: true
   }
