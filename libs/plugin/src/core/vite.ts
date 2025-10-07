@@ -195,7 +195,7 @@ export class Vite<TArgs extends Args> {
         envNames.add(envName);
         this.appStates.set(envName, { state: AppState.INITIALIZING });
 
-        acc[envName.replace("/", "$")] = {
+        acc[envName.replace(/[^\w_$]/g, "$")] = {
           build: {
             outDir: resolve(this.root, "kubejs"),
             lib: {
@@ -233,7 +233,7 @@ export class Vite<TArgs extends Args> {
             for (const envName of envNames) {
               try {
                 self._currentEnvName = envName;
-                await builder.build(builder.environments[envName.replace("/", "$")]);
+                await builder.build(builder.environments[envName.replace(/[^\w_$]/, "$")]);
               } catch (e) {
                 // swallow per-env build errors; you'll still see them in Vite output
               }
