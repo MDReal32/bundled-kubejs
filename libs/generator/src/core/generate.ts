@@ -1,3 +1,6 @@
+import { cp } from "node:fs/promises";
+import { resolve } from "node:path";
+
 import {
   Logger,
   TemplateGenerateOptions,
@@ -32,10 +35,18 @@ export const generate = async (args: TemplateGenerateOptions, templates: Templat
   await archiver.archive();
   logger.info(`Generated CurseForge project at ${options.tmpDestination}.zip`);
 
-  logger.info(`Opening save dialog...`);
-  await saveDialog(
-    `${options.tmpDestination}.zip`,
-    `${options.name} ${options.mcVersion}-${options.version}`
-  );
-  logger.info(`File saved!`);
+  if (options.output) {
+    await cp(
+      `${options.tmpDestination}.zip`,
+      resolve(options.output, `${options.name} ${options.mcVersion}-${options.version}.zip`),
+      { recursive: true }
+    );
+  } else {
+    logger.info(`Opening save dialog...`);
+    await saveDialog(
+      `${options.tmpDestination}.zip`,
+      `${options.name} ${options.mcVersion}-${options.version}`
+    );
+    logger.info(`File saved!`);
+  }
 };

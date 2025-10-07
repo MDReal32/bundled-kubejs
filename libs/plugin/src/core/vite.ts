@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { rm } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, extname, relative, resolve } from "node:path";
 import * as process from "node:process";
 
@@ -136,6 +136,8 @@ export class Vite<TArgs extends Args> {
   }
 
   private async prepare() {
+    await this.writeEnvFile();
+
     this.logger.info(
       "Dear kubejs developer, we are preparing the environment for you. Please wait..."
     );
@@ -259,5 +261,25 @@ export class Vite<TArgs extends Args> {
 
     const builder = await createBuilder(baseConfig);
     return { builder, envNames };
+  }
+
+  private async writeEnvFile() {
+    const envPath = resolve(process.cwd(), "node_modules/.kubejs/env.json");
+    const dir = dirname(envPath);
+
+    await mkdir(dir, { recursive: true });
+
+    const data = {
+      version: 1,
+      root: resolve(this.root), // absolute path to your modpack root
+      probeDir: ".probe",
+      outDir: "kubejs",
+      timestamp: Date.now()
+    };
+
+    // Atomic write (tmp + rename)
+    const tmpPath = `${envPath}.tmp`;
+    await writeFile(tmpPath, JSON.stringify(data, null, 2), "utf8");
+    await writeFile(envPath, JSON.stringify(data, null, 2), "utf8");
   }
 }

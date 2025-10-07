@@ -8,6 +8,18 @@
     "directory": "kubejs/plugin"
   },
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./build/main.d.ts",
+      "import": "./build/main.js"
+    },
+    "./tsconfig": {
+      "default": "./tsconfig.base.json"
+    },
+    "./tsconfig.json": {
+      "default": "./tsconfig.base.json"
+    }
+  },
   "main": "build/main.js",
   "types": "build/main.d.ts",
   "bin": {

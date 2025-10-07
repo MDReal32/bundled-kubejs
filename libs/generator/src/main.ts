@@ -58,6 +58,11 @@ const main = async () => {
             type: "string",
             description: "Template to use",
             choices: Object.keys(templates.templates)
+          })
+          .option("output", {
+            alias: "o",
+            type: "string",
+            description: "Where to output result"
           }),
       async argv => {
         try {

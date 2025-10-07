@@ -27,6 +27,11 @@ export interface TemplateGenerateOptions {
   tmpDestination: string;
 
   /**
+   * Output directory where save zip archive
+   */
+  output: string;
+
+  /**
    * The Minecraft version of the project.
    */
   mcVersion: string;
