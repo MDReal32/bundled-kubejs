@@ -18,7 +18,6 @@ export const cli = async (argv = hideBin(process.argv)) => {
           .option("watch", { alias: "w", type: "boolean", default: false }),
       async argv => {
         argv.root = argv.root ? resolve(process.cwd(), argv.root) : process.cwd();
-        console.log(argv.root);
         const program = new Program(_.omit(argv, ["_", "$0"]));
         await program.execute();
       }

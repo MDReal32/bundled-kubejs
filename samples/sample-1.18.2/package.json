@@ -5,6 +5,7 @@
     "url": "https://github.com/MDReal32/bundled-kubejs.git",
     "directory": "samples/sample-1.18.2"
   },
+  "type": "module",
   "scripts": {
     "build": "kubejs build",
     "watch": "kubejs build --watch"

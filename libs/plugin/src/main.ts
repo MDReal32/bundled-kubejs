@@ -1,1 +1,1 @@
-export { default as vite } from "./plugin/vite-plugin";
+export { default as vite } from "./plugins/vite.plugin";

@@ -1,1 +1,3 @@
-console.log("Hello, Server!");
+import { add } from "./utils/add";
+
+console.log(add(1));

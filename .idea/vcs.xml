@@ -8,5 +8,6 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/samples/sample-project-1.18.2-neoforge" vcs="Git" />
   </component>
 </project>

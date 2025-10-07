@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/plugin",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "A KubeJS plugin",
   "repository": {
     "type": "git",
@@ -32,7 +32,9 @@
     "@babel/preset-env": "^7.28.3",
     "@kubejs/core": "workspace:^",
     "@rollup/plugin-babel": "^6.0.4",
+    "@swc/core": "1.13.5",
     "chokidar": "^4.0.3",
+    "glob": "^11.0.3",
     "lodash": "4.17.21",
     "vite": "7.1.9",
     "yargs": "18.0.0"

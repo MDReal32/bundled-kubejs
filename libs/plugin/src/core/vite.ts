@@ -1,33 +1,155 @@
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { basename, dirname, resolve } from "node:path";
+import { rm } from "node:fs/promises";
+import { basename, dirname, extname, relative, resolve } from "node:path";
 import * as process from "node:process";
 
-import { watch } from "chokidar";
+import chokidar from "chokidar";
+import { glob } from "glob";
 import _ from "lodash";
-import type { Plugin, UserConfig } from "vite";
+import { type EnvironmentOptions, type UserConfig, createBuilder } from "vite";
 
 import { Logger } from "@kubejs/core";
-import babel from "@rollup/plugin-babel";
 
-import { __dirname } from "../const";
+import { statsPlugin } from "../plugins/stats.plugins";
+import { swcPlugin } from "../plugins/swc.plugin";
 import { App } from "../types/app";
 import { AppState } from "../types/app-states";
 import { Args } from "../types/args";
 import { Entry, entries } from "../types/entry";
+import { debounce } from "../utils/debounce";
+import { programmaticallyPause } from "../utils/programmatically-pause";
+
+type Entries = Record<Entry, [string, string][]>;
 
 export class Vite<TArgs extends Args> {
   private readonly logger = new Logger("KubeJS Plugin/Compiler");
-
-  private readonly appStates: Record<Entry, App> = {
-    client: { state: AppState.PREPARING },
-    server: { state: AppState.PREPARING },
-    startup: { state: AppState.PREPARING }
-  };
+  private readonly appStates = new Map<string, App>();
+  private _currentEnvName = "unknown";
 
   constructor(private readonly args: TArgs) {}
 
-  async resolveConfig() {
+  private get root() {
+    return this.args.root!;
+  }
+
+  private get isWindows() {
+    // it will return 'win32' even on win64 systems
+    return process.platform === "win32";
+  }
+
+  async build() {
+    this.logger.info("Starting to build scripts...");
+    await this.prepare();
+    const entries = this.getEntries();
+
+    // clean once for a fresh build
+    await rm(resolve(this.root, "kubejs/client_scripts"), { recursive: true, force: true });
+    await rm(resolve(this.root, "kubejs/server_scripts"), { recursive: true, force: true });
+    await rm(resolve(this.root, "kubejs/startup_scripts"), { recursive: true, force: true });
+
+    const { builder } = await this.createBuilderFor(entries, { watch: false });
+    await programmaticallyPause();
+    await builder.buildApp();
+  }
+
+  async watch() {
+    this.logger.info("Starting to watch scripts...");
+    await this.prepare();
+
+    // Initial scan of entry graph
+    let currentEntries = this.getEntries();
+
+    // Clean once at the beginning of watch, so watch output dir doesn't get removed mid-stream
+    await rm(resolve(this.root, "kubejs/client_scripts"), { recursive: true, force: true });
+    await rm(resolve(this.root, "kubejs/server_scripts"), { recursive: true, force: true });
+    await rm(resolve(this.root, "kubejs/startup_scripts"), { recursive: true, force: true });
+
+    // Start builder in watch mode
+    let { builder } = await this.createBuilderFor(currentEntries, { watch: true });
+    await programmaticallyPause();
+    await builder.buildApp();
+    this.logger.info("Watch is live. Changes in files will trigger incremental rebuilds 🔁");
+
+    // Watch for entry topology changes (new/removed files under src/**)
+    const srcRoot = resolve(this.root, "src");
+    const watcher = chokidar.watch(
+      [`${srcRoot}/client/**/*`, `${srcRoot}/server/**/*`, `${srcRoot}/startup/**/*`],
+      {
+        ignoreInitial: true,
+        awaitWriteFinish: { stabilityThreshold: 150, pollInterval: 50 }
+      }
+    );
+
+    const refresh = debounce(async () => {
+      try {
+        this.logger.info("Entry graph change detected. Refreshing builder…");
+
+        // Recompute entries map
+        currentEntries = this.getEntries();
+
+        // Recreate builder so environments reflect added/removed entrypoints
+        const created = await this.createBuilderFor(currentEntries, { watch: true });
+        builder = created.builder;
+
+        // Build once to attach watchers for new envs & emit initial output
+        await builder.buildApp();
+        this.logger.info("Builder refreshed ✅");
+      } catch (err) {
+        this.logger.error("Failed to refresh builder after entry change.", err as any);
+      }
+    }, 200);
+
+    watcher.on("add", refresh).on("unlink", refresh).on("addDir", refresh).on("unlinkDir", refresh);
+
+    // Optional: keep process alive explicitly (useful in some CLIs)
+    process.stdin.resume();
+  }
+
+  private getEntries() {
+    return entries.reduce((acc, entry) => {
+      acc[entry] ||= [];
+      acc[entry].push([
+        `src/${entry}.ts`,
+        relative(process.cwd(), resolve(`${entry}_scripts/main`))
+      ]);
+
+      glob.sync("**", { cwd: resolve(this.root, "src", entry), nodir: true }).forEach(file => {
+        if (file === ".") return;
+        const entryFile = `src/${entry}/${file}`;
+        const outFile = relative(
+          process.cwd(),
+          resolve(`${entry}_scripts`, basename(file, extname(file)))
+        );
+        acc[entry].push([entryFile, outFile]);
+      });
+
+      return acc;
+    }, {} as Entries);
+  }
+
+  private async prepare() {
+    this.logger.info(
+      "Dear kubejs developer, we are preparing the environment for you. Please wait..."
+    );
+    await programmaticallyPause();
+    const modsDir = resolve(this.root, "mods");
+    if (!existsSync(modsDir)) {
+      this.logger.error(
+        `Please setup project on root directory of minecraft forge project or set --root option as root of forge project.`
+      );
+      process.exit(1);
+    }
+
+    const probeGeneratedDir = resolve(this.root, ".probe");
+    if (!existsSync(probeGeneratedDir)) {
+      console.warn(
+        `Please install ProbeJS mod and run \`/probejs dump\` command in-game for generating files to autocomplete.`
+      );
+      return;
+    }
+  }
+
+  private async resolveConfig() {
     const possibleViteConfigFiles = [
       resolve(process.cwd(), "vite.config.ts"),
       resolve(process.cwd(), "vite.config.js")
@@ -62,205 +184,67 @@ export class Vite<TArgs extends Args> {
     return {};
   }
 
-  async build() {
-    this.logger.info("Starting to build scripts...");
-    await this.prepare();
-    const entryPromises = entries.map(entry => this._build(entry));
-    await Promise.all(entryPromises);
-    await this.patch();
-  }
+  private async createBuilderFor(entries: Entries, { watch = false }: { watch?: boolean } = {}) {
+    const entryPoints = [...entries.client, ...entries.server, ...entries.startup];
+    const envNames = new Set<string>();
 
-  async watch() {
-    this.logger.info("Starting to watch scripts...");
-    await this.prepare();
-    await Promise.all(entries.map(entry => this.watchFile(entry)));
-  }
+    // Map entryPoints → environments
+    const environments = entryPoints.reduce(
+      (acc, [entryFile, outFile]) => {
+        const envName = entryFile.replace(/^src\/|\.ts$/g, "");
+        envNames.add(envName);
+        this.appStates.set(envName, { state: AppState.INITIALIZING });
 
-  private async watchFile(entry: Entry) {
-    const entryFile = resolve(`src/${entry}.ts`);
-    const isEntryExists = existsSync(entryFile);
-    const watcher = watch(entryFile, { ignoreInitial: true });
-    if (!isEntryExists) {
-      console.warn(`Entry file for ${entry} not found. Watching for changes...`);
-      watcher.once("add", () => this.watchFile(entry));
-    }
+        acc[envName.replace("/", "$")] = {
+          build: {
+            outDir: resolve(this.root, "kubejs"),
+            lib: {
+              name: `kubejs-scripts:${envName}`,
+              entry: entryFile,
+              fileName: outFile,
+              formats: ["es"]
+            },
+            // watch mode toggled here
+            watch: watch ? {} : undefined
+          },
+          consumer: "client"
+        };
 
-    await this._build(entry, { build: { watch: {} } });
-  }
-
-  private async prepare() {
-    this.logger.info(
-      "Dear kubejs developer, we are preparing the environment for you. Please wait..."
+        return acc;
+      },
+      {} as Record<string, EnvironmentOptions>
     );
-    await this.programmaticallyPause();
-    const modsDir = resolve(this.args.root!, "mods");
-    if (!existsSync(modsDir)) {
-      this.logger.error(
-        `Please setup project on root directory of minecraft forge project or set --root option as root of forge project.`
-      );
-      process.exit(1);
-    }
 
-    const probeGeneratedDir = resolve(this.args.root!, "kubejs/probe/generated");
-    const files = existsSync(probeGeneratedDir) ? await readdir(probeGeneratedDir) : [];
-    if (files.length === 0) {
-      console.warn(
-        `Please install ProbeJS and run \`/probejs dump\` in-game to generate probe files.`
-      );
-      return;
-    }
-    const generatedScripts = files.map(file => resolve(probeGeneratedDir, file));
-    const tsGeneratedFile = generatedScripts
-      .map(file => `/// <reference path="${file}" />\n`)
-      .join("");
-
-    await writeFile(resolve(__dirname, "../probe.d.ts"), tsGeneratedFile);
-  }
-
-  private async programmaticallyPause() {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-
-  private async _build(entry: Entry, extraConfig?: UserConfig) {
-    const app = this.appStates[entry];
-    await this.programmaticallyPause();
-
-    const entryFile = resolve(`src/${entry}.ts`);
-    const outputFile = resolve(`kubejs/${entry}_scripts/script.js`);
-
-    if (!existsSync(entryFile)) {
-      await mkdir(dirname(outputFile), { recursive: true });
-      await writeFile(outputFile, "");
-      app.state = AppState.ENTRY_NOT_FOUND;
-      this.logger.error(`Entry file for ${entry} not found.`);
-      return;
-    }
-
-    app.state = AppState.RUNNING;
-    this.logger.info(`Building ${entry} scripts...`);
-
-    const baseConfig = _.merge<UserConfig, UserConfig, UserConfig>(
+    const self = this;
+    const baseConfig = _.merge<UserConfig, UserConfig>(
       {
+        plugins: [swcPlugin(), statsPlugin(() => this._currentEnvName, this.logger)],
+        esbuild: false,
         build: {
           emptyOutDir: false,
-          outDir: resolve(this.args.root!, "kubejs"),
-          lib: {
-            name: `kubejs-scripts:${entry}`,
-            fileName(_, entry) {
-              return `${entry}_scripts/script.js`;
-            },
-            entry: entryFile,
-            formats: ["es"]
-          },
           minify: "esbuild",
           target: "es2018",
-          chunkSizeWarningLimit: Infinity,
-          rollupOptions: {
-            plugins: [
-              babel({
-                extensions: [".js", ".ts"],
-                babelHelpers: "bundled",
-                presets: [["@babel/preset-env", { targets: { browsers: ["ie >= 11"] } }]]
-              }),
-              this.vitePluginTransformation(entry)
-            ]
-          }
+          chunkSizeWarningLimit: Infinity
         },
-        logLevel: "silent"
+        logLevel: "silent",
+        environments,
+        builder: {
+          async buildApp(builder) {
+            for (const envName of envNames) {
+              try {
+                self._currentEnvName = envName;
+                await builder.build(builder.environments[envName.replace("/", "$")]);
+              } catch (e) {
+                // swallow per-env build errors; you'll still see them in Vite output
+              }
+            }
+          }
+        }
       },
-      extraConfig || {},
       await this.resolveConfig()
     );
 
-    try {
-      const { build } = await import("vite");
-      await build(baseConfig);
-    } catch (e) {
-      this.appStates[entry].state = AppState.FAILED;
-      this.logger.error(`Failed to build ${entry} scripts.`, e);
-      return;
-    }
-  }
-
-  async patch() {
-    const promises = entries.map(async entry => {
-      // Load the file and split the lines
-      const file = resolve(this.args.root!, `kubejs/${entry}_scripts/script.js`);
-
-      const content = await readFile(file, "utf-8");
-      const lines = content.split("\n");
-
-      // Injected Script
-      /*
-         function l() {
-            try {
-              var e = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-              }));
-            } catch (t) {
-            }
-            return (l = function() {
-              return !!e;
-            })();
-          }
-       */
-
-      // Locate !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-      const problemIndex = lines.findIndex(line =>
-        line.includes("valueOf.call(Reflect.construct(Boolean, [], function() {")
-      );
-
-      // If not found, skip
-      if (problemIndex === -1) return;
-      const fnStart = problemIndex - 1;
-
-      // We know that we are not in a reflective environment, so we patch the function to simply return false
-      lines.splice(fnStart, 8, "return false;");
-
-      // Write the file
-      await writeFile(file, lines.join("\n"));
-    });
-
-    await Promise.all(promises);
-  }
-
-  private vitePluginTransformation(entry: Entry): Plugin {
-    const appState = this.appStates[entry];
-    const self = this;
-    const transformedModules = new Set<string>();
-
-    return {
-      name: "kubejs:transform",
-
-      async transform(_code, id) {
-        await self.programmaticallyPause();
-        transformedModules.add(id);
-      },
-
-      renderChunk() {
-        appState.state = AppState.SUCCEEDED;
-        self.logger.info(
-          `Successfully built ${entry} scripts. Transformed ${transformedModules.size} modules.`
-        );
-      },
-
-      async watchChange(_file, { event }) {
-        if (event === "delete") {
-          appState.state = AppState.ENTRY_NOT_FOUND;
-          self.logger.error(`Entry file for ${entry} not found.`);
-          await self.watchFile(entry);
-          return;
-        }
-        if (event === "create") return;
-
-        transformedModules.clear();
-        appState.state = AppState.RUNNING;
-        self.logger.info(`Rebuilding ${entry} scripts...`);
-      }
-    };
-  }
-
-  private get isWindows() {
-    // it will return 'win32' even on win64 systems
-    return process.platform === "win32";
+    const builder = await createBuilder(baseConfig);
+    return { builder, envNames };
   }
 }
