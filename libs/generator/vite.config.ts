@@ -6,19 +6,8 @@ export default defineConfig({
   build: {
     ssr: true,
     outDir: "build",
-    lib: {
-      name: "KubeJS/Generator",
-      entry: { main: "src/main.ts" },
-      fileName: "[name].js",
-      formats: ["es"]
-    },
-    rollupOptions: {
-      output: {
-        entryFileNames: "[name].js",
-        chunkFileNames: "chunks/[name].js",
-        assetFileNames: "assets/[name][extname]"
-      }
-    },
+    lib: { name: "KubeJS/Generator", entry: { main: "src/main.ts" }, formats: ["es"] },
+    rollupOptions: { external: ["@kubejs/core"] },
     target: "ESNext",
     minify: false,
     sourcemap: true

@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/plugin",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "A KubeJS plugin",
   "repository": {
     "type": "git",
@@ -11,7 +11,8 @@
   "exports": {
     ".": {
       "types": "./build/main.d.ts",
-      "import": "./build/main.js"
+      "import": "./build/main.js",
+      "require": "./build/main.js"
     },
     "./tsconfig": {
       "default": "./tsconfig.base.json"
@@ -27,11 +28,11 @@
   },
   "files": [
     "build",
+    "types",
     "bin",
     "README.md",
     "LICENSE",
     "package.json",
-    "probe.d.ts",
     "tsconfig.json"
   ],
   "scripts": {
@@ -57,6 +58,7 @@
     "@types/lodash": "4.17.20",
     "@types/node": "24.7.0",
     "@types/yargs": "17.0.33",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.3",
     "vite-node": "^3.2.4",
     "vite-plugin-dts": "4.5.4",

@@ -136,7 +136,7 @@ export class Vite<TArgs extends Args> {
   }
 
   private async prepare() {
-    await this.writeEnvFile();
+    await this.writeTypings();
 
     this.logger.info(
       "Dear kubejs developer, we are preparing the environment for you. Please wait..."
@@ -263,23 +263,20 @@ export class Vite<TArgs extends Args> {
     return { builder, envNames };
   }
 
-  private async writeEnvFile() {
-    const envPath = resolve(process.cwd(), "node_modules/.kubejs/env.json");
-    const dir = dirname(envPath);
+  private async writeTypings() {
+    const root = resolve(process.cwd(), "node_modules/.kubejs/types");
+    await mkdir(root, { recursive: true });
 
-    await mkdir(dir, { recursive: true });
+    const promises = (["client", "server", "startup"] as const).map(async module => {
+      await writeFile(
+        resolve(root, `${module}.globals.d.ts`),
+        [
+          `/// <reference path="${relative(root, this.root)}/.probe/${module}/probe-types/packages/index.d.ts" />`,
+          `import "${relative(root, this.root)}/.probe/${module}/probe-types/global/index.d.ts";`
+        ].join("\n")
+      );
+    });
 
-    const data = {
-      version: 1,
-      root: resolve(this.root), // absolute path to your modpack root
-      probeDir: ".probe",
-      outDir: "kubejs",
-      timestamp: Date.now()
-    };
-
-    // Atomic write (tmp + rename)
-    const tmpPath = `${envPath}.tmp`;
-    await writeFile(tmpPath, JSON.stringify(data, null, 2), "utf8");
-    await writeFile(envPath, JSON.stringify(data, null, 2), "utf8");
+    await Promise.all(promises);
   }
 }

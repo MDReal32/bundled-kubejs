@@ -17,10 +17,10 @@
     "declaration": true,
     "sourceMap": true,
     "paths": {
-      "@kubejs/core": ["./kubejs/core/src/main.ts"],
-      "@kubejs/core/dialog": ["./kubejs/core/src/dialog.ts"],
-      "@kubejs/generator": ["./kubejs/generator/src/main.ts"],
-      "@kubejs/plugin": ["./kubejs/plugin/src/main.ts"]
+      "@kubejs/core": ["./libs/core/src/main.ts"],
+      "@kubejs/core/dialog": ["./libs/core/src/dialog.ts"],
+      "@kubejs/generator": ["./libs/generator/src/main.ts"],
+      "@kubejs/plugin": ["./libs/plugin/src/main.ts"]
     }
   }
 }

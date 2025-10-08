@@ -11,15 +11,7 @@ export default defineConfig({
     lib: {
       name: "KubeJS/Core",
       entry: { main: "src/main.ts", dialog: "src/dialog.ts" },
-      fileName: "[name].js",
       formats: ["es"]
-    },
-    rollupOptions: {
-      output: {
-        entryFileNames: "[name].js",
-        chunkFileNames: "chunks/[name].js",
-        assetFileNames: "assets/[name][extname]"
-      }
     },
     sourcemap: true
   }

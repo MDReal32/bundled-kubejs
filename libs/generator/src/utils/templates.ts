@@ -26,15 +26,13 @@ export class Templates {
     try {
       basePath = require.resolve("@kubejs/generator");
     } catch (e) {
-      if (e instanceof Error && e.message.includes("Cannot find module")) {
-        const { loadConfig } = await import("tsconfig-paths");
-        const result = loadConfig(__dirname);
-        if (result.resultType === "failed") {
-          throw e;
-        }
-
-        basePath = resolve(result.absoluteBaseUrl, result.paths["@kubejs/generator"][0]);
+      const { loadConfig } = await import("tsconfig-paths");
+      const result = loadConfig(__dirname);
+      if (result.resultType === "failed") {
+        throw e;
       }
+
+      basePath = resolve(result.absoluteBaseUrl, result.paths["@kubejs/generator"][0]);
     }
 
     const root = resolve(dirname(dirname(basePath)), "templates");

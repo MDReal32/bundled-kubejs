@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
 
-    "lib": ["ES2020"],
+    "lib": ["ESNext"],
+    "types": [],
+    "typeRoots": [],
+
     "strict": true,
     "noEmit": true,
-
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowJs": false,
-
-    "types": []
+    "composite": true
   }
 }

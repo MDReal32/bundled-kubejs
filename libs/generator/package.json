@@ -9,7 +9,6 @@
   },
   "type": "module",
   "main": "build/main.js",
-  "types": "build/main.d.ts",
   "bin": {
     "kubejs-generator": "bin/generator.js"
   },
