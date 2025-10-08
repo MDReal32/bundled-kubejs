@@ -268,11 +268,12 @@ export class Vite<TArgs extends Args> {
     await mkdir(root, { recursive: true });
 
     const promises = (["client", "server", "startup"] as const).map(async module => {
+      const relativePath = relative(root, this.root).replace(/[\\/]/g, "/");
       await writeFile(
         resolve(root, `${module}.globals.d.ts`),
         [
-          `/// <reference path="${relative(root, this.root)}/.probe/${module}/probe-types/packages/index.d.ts" />`,
-          `import "${relative(root, this.root)}/.probe/${module}/probe-types/global/index.d.ts";`
+          `/// <reference path="${relativePath}/.probe/${module}/probe-types/packages/index.d.ts" />`,
+          `import "${relativePath}/.probe/${module}/probe-types/global/index.d.ts";`
         ].join("\n")
       );
     });
