@@ -1,4 +1,4 @@
-import { cfFetch } from "../../api";
+import { serverFetch } from "../../api";
 import { type GameShortVersions, ModLoaderType } from "../../types";
 
 const fixName = (name: string) => name.toUpperCase() as any as ModLoaderType;
@@ -7,7 +7,7 @@ export const getLatestModloaderForVersion = async (
   version: string,
   modLoaderType: ModLoaderType = ModLoaderType.FORGE
 ): Promise<string> => {
-  const modLoaders = await cfFetch<GameShortVersions[]>(
+  const modLoaders = await serverFetch<GameShortVersions[]>(
     `minecraft/modloader?version=${version}&includeAll=true`
   );
 

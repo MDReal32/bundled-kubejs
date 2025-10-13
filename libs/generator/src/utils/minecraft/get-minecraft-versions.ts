@@ -1,4 +1,4 @@
-import { CfMod, cfFetch } from "@kubejs/core";
+import { CfMod, serverFetch } from "@kubejs/core";
 
 import { RequiredModFiles } from "../../types/mc/required-mod-files";
 
@@ -8,7 +8,7 @@ export const getMinecraftVersions = async (): Promise<string[]> => {
   const [kubejs, probejs] = (
     await Promise.all(
       [RequiredModFiles.KubeJS, RequiredModFiles.ProbeJS].map(modId =>
-        cfFetch<CfMod>(`mods/${modId}`)
+        serverFetch<CfMod>(`mods/${modId}`)
       )
     )
   )

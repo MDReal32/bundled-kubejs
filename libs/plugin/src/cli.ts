@@ -27,24 +27,24 @@ export const cli = async (argv = hideBin(process.argv)) => {
         }
       }
     )
-    .command(
-      "pack",
-      "Pack the project for distribution",
-      async argv =>
-        argv
-          // .option("publish", { alias: "p", type: "boolean", default: false })
-          .option("outfile", { alias: "o", type: "string" })
-          .option("outdir", { alias: "d", type: "string" }),
-      async argv => {
-        try {
-          const program = new Program(_.omit(argv, ["_", "$0"]));
-          await program.pack({ outfile: argv.outfile, outdir: argv.outdir });
-        } catch (e) {
-          console.error(e);
-          process.exit(1);
-        }
-      }
-    )
+    // .command(
+    //   "package",
+    //   "Pack the project for distribution",
+    //   async argv =>
+    //     argv
+    //       // .option("publish", { alias: "p", type: "boolean", default: false })
+    //       .option("outfile", { alias: "o", type: "string" })
+    //       .option("outdir", { alias: "d", type: "string" }),
+    //   async argv => {
+    //     try {
+    //       const program = new Program(_.omit(argv, ["_", "$0"]));
+    //       await program.package();
+    //     } catch (e) {
+    //       console.error(e);
+    //       process.exit(1);
+    //     }
+    //   }
+    // )
     .scriptName("kubejs")
     .strict()
     .strictOptions()

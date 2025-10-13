@@ -1,1 +1,1 @@
-export * from "./cf-fetch";
+export * from "./server-fetch";

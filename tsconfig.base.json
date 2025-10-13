@@ -2,6 +2,12 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "incremental": true,
+    "forceConsistentCasingInFileNames": false,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,

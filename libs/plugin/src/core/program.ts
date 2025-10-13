@@ -16,11 +16,6 @@ import {
 import { Args } from "../types/args";
 import { Vite } from "./vite";
 
-interface PackOptions {
-  outfile?: string;
-  outdir?: string;
-}
-
 export class Program<TArgs extends Args> {
   private readonly vite;
 
@@ -36,7 +31,7 @@ export class Program<TArgs extends Args> {
     }
   }
 
-  async pack(opts: PackOptions = {}) {
+  async package() {
     const logger = new Logger("KubeJS Plugin/Packager");
 
     const appVersion = existsSync(resolve("package.json"))
@@ -66,7 +61,7 @@ export class Program<TArgs extends Args> {
       options
     );
 
-    const { outfile, outdir } = opts;
+    const { outfile, outdir } = this.args;
     const outfilePath = outfile ? resolve(outfile) : resolve(outdir ?? "dist", options.name);
 
     logger.info("Packing the project...");

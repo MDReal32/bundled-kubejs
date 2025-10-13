@@ -1,4 +1,4 @@
-import { cfFetch } from "../../api";
+import { serverFetch } from "../../api";
 import { type CfFile, type CfMod, ModLoaderType } from "../../types";
 import { Logger } from "../logger";
 import { queue } from "../queue";
@@ -19,8 +19,8 @@ class ModResolver {
     await queue(modIds, async (modId, queue) => {
       if (!cache.has(modId)) {
         logger.info(`[${modId}] Resolving mod`);
-        const { data: cfMod } = await cfFetch<CfMod>(`mods/${modId}`);
-        const { data: cfFiles } = await cfFetch<CfFilesWithLatest>(
+        const { data: cfMod } = await serverFetch<CfMod>(`mods/${modId}`);
+        const { data: cfFiles } = await serverFetch<CfFilesWithLatest>(
           `mods/${modId}/files?gameVersion=${mcVersion}&modLoaderType=${modLoaderType}`
         );
 

@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "kubejs build",
+    "package": "kubejs package",
     "watch": "kubejs build --watch"
   },
   "dependencies": {

@@ -13,6 +13,10 @@
     "kubejs:generator": {
       "dependsOn": ["^vite:build"],
       "outputs": ["{projectRoot}/build"]
+    },
+    "package": {
+      "dependsOn": ["^vite:build"],
+      "outputs": ["{projectRoot}/build"]
     }
   },
   "defaultBase": "master",

@@ -8,6 +8,7 @@
   },
   "type": "module",
   "workspaces": [
+    "apps/*",
     "libs/*",
     "samples/*"
   ],
@@ -20,6 +21,7 @@
     "kubejs:generator": "vite-node libs/generator/src/main.ts"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.10",
     "@nx/vite": "21.6.3",
     "@nx/web": "21.6.3",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
