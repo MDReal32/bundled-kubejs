@@ -148,3 +148,16 @@ None — no external service configuration required. However, `./gradlew build` 
 ---
 *Phase: 01-gradle-build-configuration*
 *Completed: 2026-04-04*
+
+## Self-Check: PASSED
+
+- FOUND: bundled_kubejs_dev/build.gradle.kts
+- FOUND: bundled_kubejs_dev/settings.gradle.kts
+- FOUND: bundled_kubejs_dev/gradle.properties
+- FOUND: bundled_kubejs_dev/gradlew
+- FOUND: bundled_kubejs_dev/gradlew.bat
+- FOUND: bundled_kubejs_dev/gradle/wrapper/gradle-wrapper.jar
+- FOUND: bundled_kubejs_dev/gradle/wrapper/gradle-wrapper.properties
+- FOUND: bundled_kubejs_dev/.gitignore
+- Commit 69a1b6f verified: chore(01-01) Gradle wrapper and directory scaffold
+- Commit 0cdc473 verified: feat(01-01) build.gradle.kts, settings.gradle.kts, gradle.properties
