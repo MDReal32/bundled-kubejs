@@ -7,10 +7,10 @@
 
 ### Build Configuration
 
-- [ ] **BUILD-01**: Project has valid `build.gradle.kts` using Kotlin DSL
-- [ ] **BUILD-02**: Project has valid `settings.gradle.kts` with correct project name
-- [ ] **BUILD-03**: Project has `gradle.properties` with NeoForge, Minecraft, and Kotlin versions pinned
-- [ ] **BUILD-04**: Kotlin language support configured in Gradle (kotlin-jvm plugin + kotlin-for-forge or NeoForge Kotlin support)
+- [x] **BUILD-01**: Project has valid `build.gradle.kts` using Kotlin DSL
+- [x] **BUILD-02**: Project has valid `settings.gradle.kts` with correct project name
+- [x] **BUILD-03**: Project has `gradle.properties` with NeoForge, Minecraft, and Kotlin versions pinned
+- [x] **BUILD-04**: Kotlin language support configured in Gradle (kotlin-jvm plugin + kotlin-for-forge or NeoForge Kotlin support)
 - [ ] **BUILD-05**: Project builds without errors (`./gradlew build`)
 
 ### Mod Identity & Entry Point
@@ -62,10 +62,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUILD-01 | Phase 1 | Pending |
-| BUILD-02 | Phase 1 | Pending |
-| BUILD-03 | Phase 1 | Pending |
-| BUILD-04 | Phase 1 | Pending |
+| BUILD-01 | Phase 1 | Complete |
+| BUILD-02 | Phase 1 | Complete |
+| BUILD-03 | Phase 1 | Complete |
+| BUILD-04 | Phase 1 | Complete |
 | BUILD-05 | Phase 1 | Pending |
 | MOD-01 | Phase 2 | Pending |
 | MOD-02 | Phase 2 | Pending |
