@@ -2412,6 +2412,46 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@kubejs/sample-1.19.2@workspace:samples/sample-1.19.2":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/sample-1.19.2@workspace:samples/sample-1.19.2"
+  dependencies:
+    "@kubejs/plugin": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@kubejs/sample-1.19@workspace:samples/sample-1.19":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/sample-1.19@workspace:samples/sample-1.19"
+  dependencies:
+    "@kubejs/plugin": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@kubejs/sample-1.20.1@workspace:samples/sample-1.20.1":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/sample-1.20.1@workspace:samples/sample-1.20.1"
+  dependencies:
+    "@kubejs/plugin": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@kubejs/sample-1.21.1@workspace:samples/sample-1.21.1":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/sample-1.21.1@workspace:samples/sample-1.21.1"
+  dependencies:
+    "@kubejs/plugin": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@kubejs/sample-1.21@workspace:samples/sample-1.21":
+  version: 0.0.0-use.local
+  resolution: "@kubejs/sample-1.21@workspace:samples/sample-1.21"
+  dependencies:
+    "@kubejs/plugin": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
 "@kwsites/file-exists@npm:^1.1.1":
   version: 1.1.1
   resolution: "@kwsites/file-exists@npm:1.1.1"

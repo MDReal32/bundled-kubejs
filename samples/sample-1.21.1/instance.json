@@ -1,0 +1,47 @@
+{
+  "minecraft": "1.21.1",
+  "loader": { "type": "neoforge", "version": "21.1.264", "java": 21 },
+  "mods": [
+    {
+      "id": "probejs",
+      "file": "ProbeJS-8.0.3.jar",
+      "curseforge": { "projectId": 585406, "fileId": 8304356 },
+      "uploaded": "2026-06-23",
+      "size": 3405057,
+      "sha1": "f0529482eff9596fa01de8a34abdce50529bdf55",
+      "requires": {
+        "neoforge": "[21.1.199,)",
+        "kubejs": "[2101.7.2-build.365,)"
+      }
+    },
+    {
+      "id": "kubejs",
+      "file": "kubejs-neoforge-2101.7.2-build.377.jar",
+      "curseforge": { "projectId": 238086, "fileId": 8843626 },
+      "uploaded": "2026-09-09",
+      "size": 2294111,
+      "sha1": "150c5d6efc09b969ac350ea205128dff832e0850",
+      "requires": {
+        "neoforge": "[21.1.199,)",
+        "rhino": "[2101.2.7-build.81,)"
+      }
+    },
+    {
+      "id": "betteradvancedtooltips",
+      "file": "better-advanced-tooltips-2101.1.0-build.5.jar",
+      "curseforge": { "projectId": 1637623, "fileId": 8576077 },
+      "uploaded": "2026-08-04",
+      "size": 37653,
+      "sha1": "5b73537b908764f2d3fd593a0f56a8b1b034bc50",
+      "requires": { "neoforge": "[21.1.199,)" }
+    },
+    {
+      "id": "rhino",
+      "file": "rhino-2101.2.7-build.85.jar",
+      "curseforge": { "projectId": 416294, "fileId": 8218748 },
+      "uploaded": "2026-06-08",
+      "size": 882075,
+      "sha1": "370598a1d2321c8a705ce539eb970375f20150c3"
+    }
+  ]
+}

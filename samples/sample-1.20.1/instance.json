@@ -1,0 +1,49 @@
+{
+  "minecraft": "1.20.1",
+  "loader": { "type": "forge", "version": "47.4.10", "java": 17 },
+  "mods": [
+    {
+      "id": "probejs",
+      "file": "probejs-6.0.1-forge.jar",
+      "curseforge": { "projectId": 585406, "fileId": 5227399 },
+      "uploaded": "2024-04-01",
+      "size": 2365466,
+      "sha1": "5380211b1c2891f454a136545721526b184d8513",
+      "requires": {
+        "forge": "[40,)",
+        "architectury": "[4.1.39,)",
+        "kubejs": "[2001.6.4-build.120,)"
+      }
+    },
+    {
+      "id": "kubejs",
+      "file": "kubejs-forge-2001.6.5-build.26.jar",
+      "curseforge": { "projectId": 238086, "fileId": 8020595 },
+      "uploaded": "2026-05-01",
+      "size": 1658792,
+      "sha1": "8b0cc9797d4ed00fd2d1002d58960af8b32012ae",
+      "requires": {
+        "forge": "[47.1.0,)",
+        "rhino": "[2001.2.2-build.1,)",
+        "architectury": "[9.1.12,)"
+      }
+    },
+    {
+      "id": "architectury",
+      "file": "architectury-9.2.14-forge.jar",
+      "curseforge": { "projectId": 419699, "fileId": 5137938 },
+      "uploaded": "2024-02-26",
+      "size": 580602,
+      "sha1": "a52918a500ff421180a1cbd1a0cabee712134ec4",
+      "requires": { "forge": "[46,)" }
+    },
+    {
+      "id": "rhino",
+      "file": "rhino-forge-2001.2.3-build.10.jar",
+      "curseforge": { "projectId": 416294, "fileId": 6186971 },
+      "uploaded": "2025-02-12",
+      "size": 1798244,
+      "sha1": "c83c9b719a6bab33fbd2b3f2f680eb3adbfc1aa1"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "minecraft": "1.21",
+  "loader": { "type": "neoforge", "version": "21.0.167", "java": 21 },
+  "mods": [
+    {
+      "id": "probejs",
+      "file": "ProbeJS-7.2.1.jar",
+      "curseforge": { "projectId": 585406, "fileId": 5536459 },
+      "uploaded": "2024-07-16",
+      "size": 4384100,
+      "sha1": "3063769c3575ae78a918e7e79a0bbacd44d51f19",
+      "requires": {
+        "neoforge": "[21.0.86-beta,)",
+        "kubejs": "[2100.7.0-build.88,)"
+      }
+    },
+    {
+      "id": "kubejs",
+      "file": "kubejs-neoforge-2100.7.0-build.119.jar",
+      "curseforge": { "projectId": 238086, "fileId": 5580858 },
+      "uploaded": "2024-07-30",
+      "size": 1670007,
+      "sha1": "126db7eb2d74661d7cc249fea6e13594e293a05a",
+      "requires": {
+        "neoforge": "[21.0.86-beta,)",
+        "rhino": "[2100.2.5-build.44,)"
+      }
+    },
+    {
+      "id": "rhino",
+      "file": "rhino-2100.2.5-build.46.jar",
+      "curseforge": { "projectId": 416294, "fileId": 5589424 },
+      "uploaded": "2024-08-02",
+      "size": 963439,
+      "sha1": "8b7fafef41bed54ce2744c8ce6e2c6af43429d65"
+    }
+  ]
+}
