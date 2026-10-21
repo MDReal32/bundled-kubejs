@@ -98,8 +98,9 @@ The workflow reads these repository settings:
 | `SERVER_HOST` | variable | Host or IP of the server |
 | `SERVER_USER` | variable | SSH user (`ubuntu`) |
 | `SERVER_SSH_KEY` | secret | Private key authorized on the server |
+| `CURSEFORGE_API_KEY` | secret | CurseForge Core API key, written to `/opt/kubejs/.env` on every deploy |
 
-On the server, `/opt/kubejs/.env` must hold a non-empty `CURSEFORGE_API_KEY`; the deploy refuses to run otherwise. The server pulls from GHCR on its own, so the package must be public or the server must have run `docker login ghcr.io` once. The Nginx Proxy Manager admin UI listens on `127.0.0.1:81` only, reach it with `ssh -L 8181:127.0.0.1:81 <host>` and point a proxy host at `kubejs-cf-server:3000`.
+Create the Core API key at [console.curseforge.com](https://console.curseforge.com/) under API keys; it starts with `$2a$10$`. The deploy refuses to run when `/opt/kubejs/.env` ends up without a non-empty `CURSEFORGE_API_KEY`. The server pulls from GHCR on its own, so the package must be public or the server must have run `docker login ghcr.io` once. The Nginx Proxy Manager admin UI listens on `127.0.0.1:81` only, reach it with `ssh -L 8181:127.0.0.1:81 <host>` and point a proxy host at `kubejs-cf-server:3000`.
 
 ## Generator
 

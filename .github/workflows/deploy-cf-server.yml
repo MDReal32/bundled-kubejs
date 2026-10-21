@@ -107,6 +107,17 @@ jobs:
     env:
       IMAGE_TAG: ${{ github.sha }}
     steps:
+      - name: Encode the CurseForge key for transport
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: |
+          set -eu
+          if [ -n "$CURSEFORGE_API_KEY" ]; then
+            ENCODED=$(printf '%s' "$CURSEFORGE_API_KEY" | base64 -w0)
+            echo "::add-mask::$ENCODED"
+            echo "CURSEFORGE_API_KEY_B64=$ENCODED" >> "$GITHUB_ENV"
+          fi
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.5
         with:
@@ -114,7 +125,7 @@ jobs:
           username: ${{ env.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           command_timeout: 10m
-          envs: IMAGE_NAME,IMAGE_TAG,COMPOSE_DIR,SERVICE,CONTAINER
+          envs: IMAGE_NAME,IMAGE_TAG,COMPOSE_DIR,SERVICE,CONTAINER,CURSEFORGE_API_KEY_B64
           script: |
             set -eu
 
@@ -126,6 +137,14 @@ jobs:
             TARGET="$REPO:latest"
 
             cd "$COMPOSE_DIR"
+
+            if [ -n "${CURSEFORGE_API_KEY_B64:-}" ]; then
+              KEY=$(printf '%s' "$CURSEFORGE_API_KEY_B64" | base64 -d)
+              TMP=$(mktemp .env.XXXXXX)
+              { grep -v '^CURSEFORGE_API_KEY=' .env || true; printf "CURSEFORGE_API_KEY='%s'\n" "$KEY"; } > "$TMP"
+              mv "$TMP" .env
+              unset KEY
+            fi
 
             if ! docker compose config --services | grep -Fx "$SERVICE" >/dev/null; then
               echo "compose file in $COMPOSE_DIR has no service $SERVICE; refusing to deploy"
