@@ -15,6 +15,15 @@ FROM manifests AS prod-deps
 RUN yarn workspaces focus @kubejs/cf-server --production
 
 FROM node:26-alpine AS runtime
+LABEL org.opencontainers.image.title="cf-server" \
+      org.opencontainers.image.description="NestJS proxy that holds the CurseForge API key for the bundled-kubejs tooling" \
+      org.opencontainers.image.authors="MDReal32" \
+      org.opencontainers.image.vendor="MDReal32" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.url="http://kubejs.mdreal.org" \
+      org.opencontainers.image.source="https://github.com/MDReal32/bundled-kubejs" \
+      org.opencontainers.image.documentation="https://github.com/MDReal32/bundled-kubejs/blob/master/README.md#cf-server" \
+      org.opencontainers.image.base.name="docker.io/library/node:26-alpine"
 RUN addgroup -S kubejs && adduser -S kubejs -G kubejs
 WORKDIR /app
 COPY --from=prod-deps /app/node_modules ./node_modules
