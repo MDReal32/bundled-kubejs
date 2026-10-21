@@ -130,7 +130,7 @@ yarn generate:1.21.1:neoforge
 
 Run the [Publish to NPM](.github/workflows/publish-to-npm.yml) workflow manually to publish the libs. It publishes every lib in `libs/` whose `package.json` version is not on npm yet, with provenance, and holds no npm token: it authenticates through npm [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC).
 
-Each of `@kubejs/core`, `@kubejs/plugin` and `@kubejs/generator` must list this repository and the workflow file `publish-to-npm.yml` as its trusted publisher under the package's Settings on npmjs.com.
+Each of `@kubejs/core`, `@kubejs/plugin` and `@kubejs/generator` must list this repository and the workflow file `publish-to-npm.yml` as its trusted publisher under the package's Settings on npmjs.com, with the **npm publish** allowed action ticked. Leaving only **npm stage publish** makes the workflow fail with `E403 OIDC permission denied`.
 
 ## License
 
