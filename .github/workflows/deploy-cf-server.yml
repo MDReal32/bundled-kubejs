@@ -88,6 +88,10 @@ jobs:
             type=sha,format=long,prefix=
             type=raw,value=latest
 
+      - name: Stamp build time
+        id: stamp
+        run: echo "created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -95,7 +99,9 @@ jobs:
           file: ./apps/cf-server/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            REVISION=${{ github.sha }}
+            CREATED=${{ steps.stamp.outputs.created }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
