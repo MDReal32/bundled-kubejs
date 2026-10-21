@@ -4,25 +4,26 @@ import type { CfFetchResponse } from "@kubejs/core";
 
 import { env } from "./env";
 
-const cache = new Map<string, CfFetchResponse<any>>();
-export const cfFetch = async <TResponse>(url: string): Promise<CfFetchResponse<TResponse>> => {
+const cache = new Map<string, CfFetchResponse<unknown>>();
+
+export const cfFetch = async (url: string) => {
   const cachedResponse = cache.get(url);
-  if (cachedResponse) return cachedResponse;
+  if (cachedResponse) {
+    return cachedResponse;
+  }
 
   const constructedUrl = new URL(join("v1", url), "https://api.curseforge.com/");
-  return fetch(constructedUrl, {
+  const response = await fetch(constructedUrl, {
     method: "GET",
     headers: { "x-api-key": env.CURSEFORGE_API_KEY }
-  })
-    .then(res => {
-      if (!res.ok)
-        throw new Error(`Failed to fetch ${constructedUrl} with status ${res.status}`, {
-          cause: res
-        });
-      return res.json();
-    })
-    .then((data: CfFetchResponse<TResponse>) => {
-      cache.set(url, data);
-      return data;
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${constructedUrl} with status ${response.status}`, {
+      cause: response
     });
+  }
+
+  const data: CfFetchResponse<unknown> = await response.json();
+  cache.set(url, data);
+  return data;
 };

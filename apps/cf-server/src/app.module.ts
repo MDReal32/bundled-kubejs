@@ -1,14 +1,8 @@
-import e from "express";
+import { Module } from "@nestjs/common";
 
-import { Module, NestMiddleware } from "@nestjs/common";
+import { CurseforgeModule } from "./curseforge/curseforge.module";
 
 @Module({
-  imports: []
+  imports: [CurseforgeModule]
 })
-export class AppModule implements NestMiddleware {
-  use(req: e.Request, res: e.Response, next: e.NextFunction) {
-    console.log(req.path);
-
-    next();
-  }
-}
+export class AppModule {}

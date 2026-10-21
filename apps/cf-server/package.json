@@ -6,10 +6,12 @@
   "type": "module",
   "scripts": {
     "build": "nest build",
+    "check": "biome check .",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --watch",
-    "start:prod": "node build/main"
+    "start:prod": "node build/main",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
