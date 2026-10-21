@@ -1,4 +1,5 @@
 FROM node:26-alpine AS manifests
+RUN npm install --global corepack && corepack enable
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases ./.yarn/releases
