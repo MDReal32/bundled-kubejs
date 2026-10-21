@@ -42,5 +42,5 @@
     "vite-node": "^3.2.4",
     "vitest": "^3.0.0"
   },
-  "packageManager": "yarn@4.18.0"
+  "packageManager": "yarn@4.18.1"
 }

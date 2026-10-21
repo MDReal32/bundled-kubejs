@@ -1,4 +1,4 @@
-FROM node:22-alpine AS manifests
+FROM node:26-alpine AS manifests
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases ./.yarn/releases
@@ -13,7 +13,7 @@ RUN yarn workspace @kubejs/cf-server build
 FROM manifests AS prod-deps
 RUN yarn workspaces focus @kubejs/cf-server --production
 
-FROM node:22-alpine AS runtime
+FROM node:26-alpine AS runtime
 RUN addgroup -S kubejs && adduser -S kubejs -G kubejs
 WORKDIR /app
 COPY --from=prod-deps /app/node_modules ./node_modules
