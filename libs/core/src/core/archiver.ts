@@ -49,8 +49,7 @@ export class Archiver {
 
   archive() {
     this.logger.info("Starting archive process...");
-    // biome-ignore lint/suspicious/noAsyncPromiseExecutor: predates Biome; removing `async` changes how executor errors surface
-    return new Promise<void>(async (resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.__archive.on("warning", err => {
         if (err.code === "ENOENT") {
           this.logger.warn("We got a warning:", err);
@@ -64,10 +63,13 @@ export class Archiver {
         reject(err);
       });
 
-      this.__archive.finalize().then(() => {
+      this.__output.on("error", reject);
+      this.__output.on("close", () => {
         this.logger.info(`Archive finalized: ${this.__archive.pointer()} total bytes`);
         resolve();
       });
+
+      this.__archive.finalize().catch(reject);
     });
   }
 }
