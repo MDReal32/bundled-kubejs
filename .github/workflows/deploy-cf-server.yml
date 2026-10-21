@@ -10,7 +10,6 @@ on:
       - yarn.lock
       - .yarnrc.yml
       - .yarn/releases/**
-      - .yarn/plugins/**
       - tsconfig.base.json
       - nx.json
       - biome.json

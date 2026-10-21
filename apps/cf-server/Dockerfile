@@ -2,7 +2,6 @@ FROM node:22-alpine AS manifests
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases ./.yarn/releases
-COPY .yarn/plugins ./.yarn/plugins
 COPY apps/cf-server/package.json ./apps/cf-server/package.json
 
 FROM manifests AS build
