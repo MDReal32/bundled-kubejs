@@ -111,9 +111,12 @@ jobs:
         if: ${{ steps.decide.outputs.do == 'publish' }}
         run: yarn nx build @kubejs/${{ matrix.package_name }}
 
+      - name: Pack
+        if: ${{ steps.decide.outputs.do == 'publish' }}
+        run: yarn workspace @kubejs/${{ matrix.package_name }} pack --out "$RUNNER_TEMP/${{ matrix.package_name }}.tgz"
+
       - name: Publish
         if: ${{ steps.decide.outputs.do == 'publish' }}
-        env:
-          YARN_NPM_REGISTRY_SERVER: https://registry.npmjs.org
-          YARN_NPM_PUBLISH_PROVENANCE: 'true'
-        run: yarn workspace @kubejs/${{ matrix.package_name }} publish:me
+        run: |
+          npm --version
+          npm publish "$RUNNER_TEMP/${{ matrix.package_name }}.tgz" --access public --provenance
