@@ -49,6 +49,7 @@ export class Archiver {
 
   archive() {
     this.logger.info("Starting archive process...");
+    // biome-ignore lint/suspicious/noAsyncPromiseExecutor: predates Biome; removing `async` changes how executor errors surface
     return new Promise<void>(async (resolve, reject) => {
       this.__archive.on("warning", err => {
         if (err.code === "ENOENT") {

@@ -18,6 +18,7 @@
     "templates"
   ],
   "scripts": {
+    "check": "biome check .",
     "prepublishOnly": "yarn build",
     "publish:me": "yarn npm publish --access public",
     "watch": "vite build --watch"
@@ -45,6 +46,5 @@
     "typescript": "5.9.3",
     "vite": "7.1.9",
     "vite-tsconfig-paths": "^5.1.4"
-  },
-  "packageManager": "yarn@4.0.2"
+  }
 }

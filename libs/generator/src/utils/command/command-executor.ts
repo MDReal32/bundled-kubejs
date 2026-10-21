@@ -7,7 +7,7 @@ import { CommandBuilder } from "./command-builder";
 @LogActions("CommandExecutor")
 export class CommandExecutor {
   protected readonly commandBuilder: CommandBuilder;
-  protected declare logger: Logger;
+  declare protected logger: Logger;
 
   constructor(baseCommand: string) {
     this.commandBuilder = new CommandBuilder(baseCommand);

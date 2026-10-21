@@ -6,7 +6,7 @@ import { type GitOptions } from "../../types/commands/git-options";
 
 @LogActions("GeneratorExtension")
 export class GeneratorExtension {
-  private declare logger: Logger;
+  declare private logger: Logger;
 
   async setupGit(options: GitOptions) {
     const git = simpleGit(options.cwd, {});

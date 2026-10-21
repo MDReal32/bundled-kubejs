@@ -2,20 +2,23 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build", "^vite:build"],
+      "dependsOn": ["^build", "typecheck", "check"],
       "outputs": ["{projectRoot}/build"],
       "cache": true
     },
-    "watch": {
-      "dependsOn": ["^vite:build"],
-      "outputs": ["{projectRoot}/build"]
+    "check": {
+      "inputs": ["default", "{workspaceRoot}/biome.json"],
+      "cache": true
     },
-    "kubejs:generator": {
-      "dependsOn": ["^vite:build"],
+    "typecheck": {
+      "cache": true
+    },
+    "watch": {
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/build"]
     },
     "package": {
-      "dependsOn": ["^vite:build"],
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/build"]
     }
   },
@@ -24,7 +27,7 @@
     {
       "plugin": "@nx/vite/plugin",
       "options": {
-        "buildTargetName": "vite:build",
+        "buildTargetName": "build",
         "testTargetName": "test",
         "serveTargetName": "serve",
         "devTargetName": "dev",

@@ -1,7 +1,6 @@
 name: Publish to NPM
 on:
-  push:
-    branches: [master]
+  workflow_dispatch:
 
 jobs:
   prepare:
@@ -104,7 +103,7 @@ jobs:
 
       - name: Build
         if: ${{ steps.decide.outputs.do == 'publish' }}
-        run: yarn nx run @kubejs/${{ matrix.package_name }}:vite:build
+        run: yarn nx build @kubejs/${{ matrix.package_name }}
 
       - name: Publish
         if: ${{ steps.decide.outputs.do == 'publish' }}

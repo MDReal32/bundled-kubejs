@@ -28,7 +28,9 @@ class ModResolver {
         const latestVersion = cfFiles.find(datum => datum.releaseType === 1);
         if (!latestVersion) return;
         cfFiles.latest = cfFiles.find(datum => datum.id === latestVersion.id)!;
-        latestVersion.dependencies.forEach(dependency => queue.push(dependency.modId));
+        latestVersion.dependencies.forEach(dependency => {
+          queue.push(dependency.modId);
+        });
 
         cache.set(modId, { cfMod, cfFiles });
       }

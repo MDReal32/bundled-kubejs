@@ -20,6 +20,7 @@
     "tsconfig.json"
   ],
   "scripts": {
+    "check": "biome check .",
     "prepublishOnly": "yarn build",
     "publish:me": "yarn npm publish --access public",
     "watch": "vite build --watch"
