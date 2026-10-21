@@ -128,7 +128,9 @@ yarn generate:1.21.1:neoforge
 
 ## CI
 
-GitHub Actions publishes each lib to npm automatically when its `package.json` version is bumped on `master`.
+Run the [Publish to NPM](.github/workflows/publish-to-npm.yml) workflow manually to publish the libs. It publishes every lib in `libs/` whose `package.json` version is not on npm yet, with provenance, and holds no npm token: it authenticates through npm [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC).
+
+Each of `@kubejs/core`, `@kubejs/plugin` and `@kubejs/generator` must list this repository and the workflow file `publish-to-npm.yml` as its trusted publisher under the package's Settings on npmjs.com.
 
 ## License
 

@@ -2,6 +2,9 @@ name: Publish to NPM
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -33,6 +36,9 @@ jobs:
   publish:
     needs: prepare
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       matrix:
         package_name: ${{ fromJSON(needs.prepare.outputs.names) }}
@@ -44,7 +50,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://registry.npmjs.org'
 
       - run: corepack enable
       - run: yarn --immutable
@@ -108,5 +113,6 @@ jobs:
       - name: Publish
         if: ${{ steps.decide.outputs.do == 'publish' }}
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_REGISTRY_SERVER: https://registry.npmjs.org
+          YARN_NPM_PUBLISH_PROVENANCE: 'true'
         run: yarn workspace @kubejs/${{ matrix.package_name }} publish:me
