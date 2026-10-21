@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node + Yarn
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - run: corepack enable
 
       - id: collect
@@ -40,6 +40,7 @@ jobs:
       contents: read
       id-token: write
     strategy:
+      max-parallel: 1
       matrix:
         package_name: ${{ fromJSON(needs.prepare.outputs.names) }}
 
@@ -49,7 +50,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - run: corepack enable
       - run: yarn --immutable
