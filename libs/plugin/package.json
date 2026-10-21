@@ -36,7 +36,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "check": "biome check .",
+    "check": "yarn run -T biome check .",
     "dev": "vite-node src/cli.ts",
     "publish:me": "yarn npm publish --access public",
     "watch": "vite build --watch"

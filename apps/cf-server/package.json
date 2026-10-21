@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "nest build",
-    "check": "biome check .",
+    "check": "yarn run -T biome check .",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --watch",

@@ -20,7 +20,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "check": "biome check .",
+    "check": "yarn run -T biome check .",
     "codegen": "vite build --config vite.codegen.config.ts",
     "prepublishOnly": "yarn build",
     "publish:me": "yarn npm publish --access public",
