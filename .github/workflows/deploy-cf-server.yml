@@ -1,0 +1,187 @@
+name: Deploy cf-server
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - apps/cf-server/**
+      - libs/core/**
+      - package.json
+      - yarn.lock
+      - .yarnrc.yml
+      - .yarn/releases/**
+      - .yarn/plugins/**
+      - tsconfig.base.json
+      - nx.json
+      - biome.json
+      - .dockerignore
+      - .github/workflows/deploy-cf-server.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-cf-server
+  cancel-in-progress: false
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/cf-server
+  SERVER_HOST: ${{ vars.SERVER_HOST }}
+  SERVER_USER: ${{ vars.SERVER_USER }}
+  COMPOSE_DIR: /opt/kubejs
+  SERVICE: cf-server
+  CONTAINER: kubejs-cf-server
+
+jobs:
+  verify:
+    name: Typecheck and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - run: corepack enable
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: yarn
+
+      - run: yarn --immutable
+
+      - name: Build through the Nx gates
+        run: yarn nx build @kubejs/cf-server
+
+  build-and-push:
+    name: Build & push image
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          flavor: latest=false
+          tags: |
+            type=sha,format=long,prefix=
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./apps/cf-server/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to server
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions: {}
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          command_timeout: 10m
+          envs: IMAGE_NAME,IMAGE_TAG,COMPOSE_DIR,SERVICE,CONTAINER
+          script: |
+            set -eu
+
+            exec 9>/tmp/kubejs-deploy.lock
+            flock 9
+
+            REPO=$(printf '%s' "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
+            IMAGE="$REPO:$IMAGE_TAG"
+            TARGET="$REPO:latest"
+
+            cd "$COMPOSE_DIR"
+
+            if ! docker compose config --services | grep -Fx "$SERVICE" >/dev/null; then
+              echo "compose file in $COMPOSE_DIR has no service $SERVICE; refusing to deploy"
+              exit 1
+            fi
+            if ! docker compose config --images | grep -Fx "$TARGET" >/dev/null; then
+              echo "compose file in $COMPOSE_DIR does not reference $TARGET; refusing to deploy"
+              exit 1
+            fi
+            if ! grep -Eq '^CURSEFORGE_API_KEY=.+' .env; then
+              echo "CURSEFORGE_API_KEY is empty in $COMPOSE_DIR/.env; refusing to deploy"
+              exit 1
+            fi
+
+            echo "Deploying $IMAGE_TAG"
+            echo "Pulling $IMAGE"
+            if ! docker pull "$IMAGE"; then
+              echo "Pull failed. If the package is private, run 'docker login ghcr.io' on the server once, or make the package public."
+              exit 1
+            fi
+
+            docker tag "$IMAGE" "$TARGET"
+
+            echo "Recreating $SERVICE (every other service is left untouched)"
+            if ! docker compose up -d --no-deps --force-recreate "$SERVICE"; then
+              echo "docker compose up failed"
+              docker compose logs --tail 100 "$SERVICE" || true
+              exit 1
+            fi
+
+            echo "Waiting for container health check"
+            for _ in $(seq 1 20); do
+              STATE=$(docker inspect -f '{{.State.Status}}' "$CONTAINER" 2>/dev/null || echo missing)
+              HEALTH=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$CONTAINER" 2>/dev/null || echo none)
+              if [ "$STATE" != "running" ]; then
+                echo "Container is $STATE"
+                docker logs --tail 100 "$CONTAINER" || true
+                exit 1
+              fi
+              if [ "$HEALTH" = "healthy" ]; then
+                break
+              fi
+              if [ "$HEALTH" = "unhealthy" ]; then
+                echo "Container reported unhealthy"
+                docker logs --tail 100 "$CONTAINER" || true
+                exit 1
+              fi
+              sleep 3
+            done
+
+            if [ "$HEALTH" != "healthy" ]; then
+              echo "Container did not become healthy in time (health: $HEALTH)"
+              docker logs --tail 100 "$CONTAINER" || true
+              exit 1
+            fi
+            echo "Container is healthy"
+
+            echo "Deployment verified healthy, cleaning up unused images"
+            docker image prune -af || echo "Image cleanup failed; the deploy itself succeeded"

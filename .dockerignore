@@ -1,0 +1,17 @@
+.git
+.github
+.idea
+.claude
+.nx
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+**/node_modules
+**/build
+**/dist
+**/.env
+**/.env.*
+**/*.log
+**/*.tsbuildinfo
+samples
+libs

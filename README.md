@@ -32,13 +32,15 @@ yarn
 
 Build all packages:
 ```bash
-nx run-many -t vite:build
+yarn nx run-many -t build
 ```
 
 Build a single package:
 ```bash
-nx run @kubejs/plugin:vite:build
+yarn nx build @kubejs/plugin
 ```
+
+`build` first builds the package's dependencies, then runs its `typecheck` and `check` (Biome) targets, so a type error or lint error fails the build.
 
 ## cf-server
 
@@ -67,15 +69,37 @@ yarn start:prod  # production
 
 ### Endpoints
 
-| Method | Path                             | Description                            |
-|--------|----------------------------------|----------------------------------------|
-| `GET`  | `/api/health`                    | Liveness check                         |
-| `GET`  | `/api/curseforge/mods/search`    | Search mods                            |
-| `GET`  | `/api/curseforge/mods/:id`       | Get mod by ID                          |
-| `GET`  | `/api/curseforge/mods/:id/files` | Get mod files                          |
-| `POST` | `/api/curseforge/mods/resolve`   | Resolve mod IDs into metadata + files  |
-| `POST` | `/api/curseforge/manifest`       | Generate a CurseForge `manifest.json`  |
-| `GET`  | `/api/minecraft/modloaders`      | Get modloaders for a Minecraft version |
+The server is a read-only pass-through to the CurseForge `v1` API, with the token added and
+responses cached in memory. Only `GET /v1/mods/*` and `GET /v1/minecraft/*` are forwarded; anything
+else returns `404`, and upstream errors keep their status code.
+
+### Using it from the generator
+
+`@kubejs/core` sends all CurseForge requests to the server named by `API_URL`:
+
+```bash
+API_URL=http://localhost:3000 yarn kubejs:generator generate
+```
+
+### Deployment
+
+cf-server runs on a single AWS Lightsail host as a Docker Compose stack in `/opt/kubejs`: the `cf-server` container behind Nginx Proxy Manager, which terminates TLS. The compose file and `.env` live only on the server.
+
+A push to `master` that touches `apps/cf-server` (or its build inputs) runs [deploy-cf-server.yml](.github/workflows/deploy-cf-server.yml):
+
+1. `yarn nx build @kubejs/cf-server` runs the typecheck and Biome gates.
+2. The image is built from [apps/cf-server/Dockerfile](apps/cf-server/Dockerfile) and pushed to `ghcr.io/mdreal32/bundled-kubejs/cf-server`, tagged with the commit SHA and `latest`.
+3. The server pulls the SHA, retags it `latest`, recreates only the `cf-server` service and waits for its healthcheck. Nginx Proxy Manager is never restarted.
+
+The workflow reads these repository settings:
+
+| Name | Kind | Value |
+|---|---|---|
+| `SERVER_HOST` | variable | Host or IP of the server |
+| `SERVER_USER` | variable | SSH user (`ubuntu`) |
+| `SERVER_SSH_KEY` | secret | Private key authorized on the server |
+
+On the server, `/opt/kubejs/.env` must hold a non-empty `CURSEFORGE_API_KEY`; the deploy refuses to run otherwise. The server pulls from GHCR on its own, so the package must be public or the server must have run `docker login ghcr.io` once. The Nginx Proxy Manager admin UI listens on `127.0.0.1:81` only, reach it with `ssh -L 8181:127.0.0.1:81 <host>` and point a proxy host at `kubejs-cf-server:3000`.
 
 ## Generator
 
@@ -91,7 +115,7 @@ yarn generate:1.21.1:neoforge
 
 ## Samples
 
-`samples/sample-1.18.2` — example modpack project using `@kubejs/plugin`.
+`samples/sample-1.18.1` and `samples/sample-1.18.2` — example modpack projects using `@kubejs/plugin`, one per KubeJS + ProbeJS combination. See [samples/README.md](samples/README.md).
 
 ## CI
 
