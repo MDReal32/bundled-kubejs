@@ -1,27 +1,26 @@
-import { serverFetch } from "../../api";
+import { cfServerClient } from "../../api";
 import { type GameShortVersions, ModLoaderType } from "../../types";
+import { toModLoaderType } from "./to-mod-loader-type";
 
-const fixName = (name: string) => name.toUpperCase() as any as ModLoaderType;
+const compareModLoaderNames = (a: GameShortVersions, b: GameShortVersions) =>
+  a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
 
 export const getLatestModloaderForVersion = async (
   version: string,
   modLoaderType: ModLoaderType = ModLoaderType.FORGE
-): Promise<string> => {
-  const modLoaders = await serverFetch<GameShortVersions[]>(
-    `minecraft/modloader?version=${version}&includeAll=true`
-  );
+) => {
+  const modLoaders = await cfServerClient.minecraft.getModLoaders({ version, includeAll: true });
 
-  const gameShortVersions = modLoaders.data.sort((a, b) =>
-    a.gameVersion.localeCompare(b.gameVersion, undefined, { numeric: true, sensitivity: "base" })
-  );
-  const modLoaderCode = (
-    typeof modLoaderType === "number" ? modLoaderType : ModLoaderType[fixName(modLoaderType)]
-  ) as ModLoaderType;
+  const modLoaderCode = toModLoaderType(modLoaderType);
 
+  const modLoadersOfType = modLoaders.data.filter(modLoader => modLoader.type === modLoaderCode);
   const latestModLoader =
-    gameShortVersions.find(
-      modLoader => modLoader.recommended && modLoader.type === modLoaderCode
-    ) ?? gameShortVersions[gameShortVersions.length - 1];
+    modLoadersOfType.find(modLoader => modLoader.recommended) ??
+    modLoadersOfType.sort(compareModLoaderNames).at(-1);
+
+  if (!latestModLoader) {
+    throw new Error(`No ${ModLoaderType[modLoaderCode]} mod loader is listed for ${version}`);
+  }
 
   if (modLoaderCode !== ModLoaderType.FORGE) {
     latestModLoader.name = latestModLoader.name.replace(`-${latestModLoader.gameVersion}`, "");

@@ -263,7 +263,8 @@ rhino.local.properties
 # Packages
 libs/*/build
 
-
+# Generator output
+generated
 
 .nx/cache
 .nx/workspace-data
@@ -271,3 +272,6 @@ libs/*/build
 .github/instructions/nx.instructions.md
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
+
+# nestbridge
+.nestbridge

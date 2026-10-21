@@ -2,8 +2,13 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build", "typecheck", "check"],
+      "dependsOn": ["^build", "codegen", "typecheck", "check"],
       "outputs": ["{projectRoot}/build"],
+      "cache": true
+    },
+    "codegen": {
+      "inputs": ["default", "{workspaceRoot}/apps/cf-server/src/**/*.ts"],
+      "outputs": ["{projectRoot}/.nestbridge"],
       "cache": true
     },
     "check": {
@@ -11,6 +16,7 @@
       "cache": true
     },
     "typecheck": {
+      "dependsOn": ["codegen", "^codegen"],
       "cache": true
     },
     "watch": {

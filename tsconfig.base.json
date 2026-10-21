@@ -8,7 +8,7 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
@@ -23,6 +23,7 @@
     "declaration": true,
     "sourceMap": true,
     "paths": {
+      "@cf-server/*": ["./libs/core/.nestbridge/cf-server/src/*"],
       "@kubejs/core": ["./libs/core/src/main.ts"],
       "@kubejs/core/dialog": ["./libs/core/src/dialog.ts"],
       "@kubejs/generator": ["./libs/generator/src/main.ts"],

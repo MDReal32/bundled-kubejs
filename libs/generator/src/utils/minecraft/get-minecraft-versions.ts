@@ -1,19 +1,13 @@
-import { CfMod, serverFetch } from "@kubejs/core";
+import { getModGameVersions } from "@kubejs/core";
 
 import { RequiredModFiles } from "../../types/mc/required-mod-files";
 
-export const getMinecraftVersions = async (): Promise<string[]> => {
+export const getMinecraftVersions = async () => {
   const interval = setTimeout(console.log, 10000, "Sorry for the wait, this may take a while...");
 
-  const [kubejs, probejs] = (
-    await Promise.all(
-      [RequiredModFiles.KubeJS, RequiredModFiles.ProbeJS].map(modId =>
-        serverFetch<CfMod>(`mods/${modId}`)
-      )
-    )
-  )
-    .map(mod => mod.data.latestFilesIndexes.map(f => f.gameVersion))
-    .map(versions => Array.from(new Set(versions)));
+  const [kubejs, probejs] = await Promise.all(
+    [RequiredModFiles.KubeJS, RequiredModFiles.ProbeJS].map(modId => getModGameVersions(modId))
+  );
 
   clearTimeout(interval);
   return kubejs

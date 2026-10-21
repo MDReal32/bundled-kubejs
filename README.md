@@ -83,7 +83,7 @@ Every query parameter is required, and parameters not listed are dropped before 
 
 ### Using it from the generator
 
-`@kubejs/core` sends all CurseForge requests to the server named by `API_URL`, and to the hosted instance at `http://kubejs.mdreal.org` when it is not set. To use a local server instead:
+`@kubejs/core` calls the server through a typed [nestbridge](https://github.com/MDReal32/nestbridge) client generated from the controllers above, with `http://kubejs.mdreal.org` as the built-in base URL. Set `API_URL` to use another server, such as a local one:
 
 ```bash
 API_URL=http://localhost:3000 yarn kubejs:generator generate
@@ -124,7 +124,7 @@ yarn generate:1.21.1:neoforge
 
 ## Samples
 
-`samples/sample-1.18.1` and `samples/sample-1.18.2` — example modpack projects using `@kubejs/plugin`, one per KubeJS + ProbeJS combination. See [samples/README.md](samples/README.md).
+`samples/sample-<minecraft version>` — example modpack projects using `@kubejs/plugin`, one per KubeJS + ProbeJS combination (1.18.1 to 1.21.1). Each pins the files `yarn generate:<minecraft version>:<loader>` resolves, so use those scripts to inspect what the generator picks. See [samples/README.md](samples/README.md).
 
 ## CI
 

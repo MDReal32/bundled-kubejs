@@ -1,11 +1,16 @@
-import { serverFetch } from "../../api";
+import { cfServerClient } from "../../api";
 import { type CfFile, type CfMod, ModLoaderType } from "../../types";
 import { Logger } from "../logger";
+import { toModLoaderType } from "../minecraft/to-mod-loader-type";
 import { queue } from "../queue";
+import { selectLatestFile } from "./select-latest-file";
+
+const releaseFileType = 1;
+const requiredDependencyRelationType = 3;
 
 type CfFilesWithLatest = CfFile[] & { latest: CfFile };
 
-const cache = new Map<number, { cfMod: CfMod; cfFiles: CfFilesWithLatest }>();
+const cache = new Map<string, { cfMod: CfMod; cfFiles: CfFilesWithLatest }>();
 
 class ModResolver {
   async resolveMods(
@@ -17,25 +22,39 @@ class ModResolver {
     const logger = new Logger("KubeJS Core/ModResolver");
 
     await queue(modIds, async (modId, queue) => {
-      if (!cache.has(modId)) {
+      const cacheKey = `${mcVersion}:${modLoaderType}:${modId}`;
+      if (!cache.has(cacheKey)) {
         logger.info(`[${modId}] Resolving mod`);
-        const { data: cfMod } = await serverFetch<CfMod>(`mods/${modId}`);
-        const { data: cfFiles } = await serverFetch<CfFilesWithLatest>(
-          `mods/${modId}/files?gameVersion=${mcVersion}&modLoaderType=${modLoaderType}`
-        );
-
-        logger.info(`[${modId}] Resolved mod ${cfMod.name}`);
-        const latestVersion = cfFiles.find(datum => datum.releaseType === 1);
-        if (!latestVersion) return;
-        cfFiles.latest = cfFiles.find(datum => datum.id === latestVersion.id)!;
-        latestVersion.dependencies.forEach(dependency => {
-          queue.push(dependency.modId);
+        const { data: cfMod } = await cfServerClient.mods.getMod(modId);
+        const { data: cfFiles } = await cfServerClient.mods.getModFiles(modId, {
+          gameVersion: mcVersion,
+          modLoaderType
         });
 
-        cache.set(modId, { cfMod, cfFiles });
+        logger.info(`[${modId}] Resolved mod ${cfMod.name}`);
+        const latestFile = selectLatestFile(cfFiles, mcVersion);
+        if (!latestFile) {
+          logger.warn(`[${modId}] ${cfMod.name} has no file for ${mcVersion}, skipping it`);
+          return;
+        }
+
+        if (latestFile.releaseType !== releaseFileType) {
+          logger.warn(
+            `[${modId}] ${cfMod.name} has no release file for ${mcVersion}, using ${latestFile.fileName} (release type ${latestFile.releaseType})`
+          );
+        }
+
+        const cfFilesWithLatest = Object.assign(cfFiles, { latest: latestFile });
+        latestFile.dependencies
+          .filter(dependency => dependency.relationType === requiredDependencyRelationType)
+          .forEach(dependency => {
+            queue.push(dependency.modId);
+          });
+
+        cache.set(cacheKey, { cfMod, cfFiles: cfFilesWithLatest });
       }
 
-      const { cfMod, cfFiles } = cache.get(modId)!;
+      const { cfMod, cfFiles } = cache.get(cacheKey)!;
       await cb(cfMod, cfFiles);
     });
   }
@@ -47,5 +66,5 @@ export const resolveMods = async (
   modLoaderType: ModLoaderType = ModLoaderType.FORGE,
   cb: (mod: CfMod, files: CfFilesWithLatest) => Promise<void>
 ) => {
-  await new ModResolver().resolveMods(mcVersion, modIds, modLoaderType, cb);
+  await new ModResolver().resolveMods(mcVersion, modIds, toModLoaderType(modLoaderType), cb);
 };

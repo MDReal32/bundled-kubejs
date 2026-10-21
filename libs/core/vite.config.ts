@@ -2,8 +2,12 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+import { cfServerAlias, cfServerBridge } from "./vite/cf-server-bridge";
+
 export default defineConfig({
-  plugins: [dts({ rollupTypes: true }), tsconfigPaths()],
+  resolve: { alias: cfServerAlias },
+  plugins: [cfServerBridge(), dts({ rollupTypes: true }), tsconfigPaths()],
+  ssr: { noExternal: ["nestbridge", "@nestbridge/runtime"] },
   build: {
     outDir: "build",
     ssr: true,
