@@ -69,13 +69,21 @@ yarn start:prod  # production
 
 ### Endpoints
 
-The server is a read-only pass-through to the CurseForge `v1` API, with the token added and
-responses cached in memory. Only `GET /v1/mods/*` and `GET /v1/minecraft/*` are forwarded; anything
-else returns `404`, and upstream errors keep their status code.
+The server exposes exactly these routes, each a fixed controller method that forwards one CurseForge
+`v1` call with the token added; responses are cached in memory. Every other path returns `404`,
+invalid input returns `400`, and upstream errors keep their status code.
+
+| Route | Query | Forwards to |
+|---|---|---|
+| `GET /v1/mods/:modId` | | `mods/:modId` |
+| `GET /v1/mods/:modId/files` | `gameVersion`, `modLoaderType` (0 to 6) | `mods/:modId/files` |
+| `GET /v1/minecraft/modloader` | `version`, `includeAll` (`true`/`false`) | `minecraft/modloader` |
+
+Every query parameter is required, and parameters not listed are dropped before the upstream call.
 
 ### Using it from the generator
 
-`@kubejs/core` sends all CurseForge requests to the server named by `API_URL`:
+`@kubejs/core` sends all CurseForge requests to the server named by `API_URL`, and to the hosted instance at `http://kubejs.mdreal.org` when it is not set. To use a local server instead:
 
 ```bash
 API_URL=http://localhost:3000 yarn kubejs:generator generate

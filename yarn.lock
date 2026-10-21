@@ -2294,6 +2294,7 @@ __metadata:
     "@t3-oss/env-core": "npm:^0.13.8"
     "@types/express": "npm:^5.0.0"
     "@types/node": "npm:^20.3.1"
+    nestjs-zod: "npm:^5.5.0"
     reflect-metadata: "npm:^0.2.0"
     rxjs: "npm:^7.8.1"
     source-map-support: "npm:^0.5.21"
@@ -5804,7 +5805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10c0/e53481aaf1aa2c4082b5342be6b6d8ad9dfe387bc92ce197a66dea08bd4265904a087e75e464f14d1347cf2ac8afe1e4c16b266e0561cc5df29382d3c5f80044
@@ -8413,6 +8414,23 @@ __metadata:
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: 10c0/c2f5a604a54a8ec5438a342e1f356dff4bc33ccccdb6dc668d94fe8e5eccfc9d2c2eea6064b0967a767ba63b33763f51ccf2cd2441b461a7322656c1f06b3f5d
+  languageName: node
+  linkType: hard
+
+"nestjs-zod@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "nestjs-zod@npm:5.5.0"
+  dependencies:
+    deepmerge: "npm:^4.3.1"
+  peerDependencies:
+    "@nestjs/common": ^10.0.0 || ^11.0.0
+    "@nestjs/swagger": ^7.4.2 || ^8.0.0 || ^11.0.0
+    rxjs: ^7.0.0
+    zod: ^3.25.0 || ^4.0.0
+  peerDependenciesMeta:
+    "@nestjs/swagger":
+      optional: true
+  checksum: 10c0/210b76bc6eafa7eb3463971b07954a37db9a63a9787d9bdd5a3efce11d4c771966b939276a90aa1a0d73391f612968af4d19a7e9424d98382a50bf518286544e
   languageName: node
   linkType: hard
 

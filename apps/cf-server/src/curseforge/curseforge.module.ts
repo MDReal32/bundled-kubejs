@@ -1,10 +1,11 @@
 import { Module } from "@nestjs/common";
 
-import { CurseforgeController } from "./curseforge.controller";
 import { CurseforgeService } from "./curseforge.service";
+import { MinecraftController } from "./minecraft.controller";
+import { ModsController } from "./mods.controller";
 
 @Module({
-  controllers: [CurseforgeController],
+  controllers: [ModsController, MinecraftController],
   providers: [CurseforgeService]
 })
 export class CurseforgeModule {}
