@@ -53,7 +53,10 @@ jobs:
 
       - run: yarn --immutable
 
-      - run: yarn nx build @kubejs/plugin
+      - name: Build line
+        env:
+          MC_LINE: ${{ matrix.line }}
+        run: yarn nx build @kubejs/plugin
 
       - name: Publish line
         env:

@@ -18,6 +18,9 @@ const mcLines = Object.keys(mcVariants);
 assertLatestMcLinePointers(packageRoot, mcLines);
 assertLinePackages(packageRoot, mcLines);
 
+const selectedLines = process.env.MC_LINE ? [process.env.MC_LINE] : mcLines;
+const buildableEnvironments = new Set(selectedLines.map(line => mcEnvironmentName(line)));
+
 export default defineConfig({
   plugins: [dts({ rollupTypes: true }), tsconfigPaths()],
   define: { __DEV__: process.env.NODE_ENV === "development" },
@@ -41,7 +44,7 @@ export default defineConfig({
   builder: {
     async buildApp(builder) {
       const environments = Object.entries(builder.environments)
-        .filter(([name]) => name.startsWith("mc_"))
+        .filter(([name]) => buildableEnvironments.has(name))
         .map(([, environment]) => environment);
       await Promise.all(environments.map(environment => builder.build(environment)));
     }
