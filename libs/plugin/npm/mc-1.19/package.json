@@ -22,7 +22,7 @@
     "kubejs": "bin/cli.js"
   },
   "files": [
-    "build/kubejs.plugin*",
+    "build",
     "bin",
     "types",
     "README.md",
