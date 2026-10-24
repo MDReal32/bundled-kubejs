@@ -16,11 +16,15 @@ import { Args } from "../types/args";
 import { Entry, entries } from "../types/entry";
 import { debounce } from "../utils/debounce";
 import { programmaticallyPause } from "../utils/programmatically-pause";
+import { defaultMcVariant } from "../variants/const";
+import type { McVariant } from "../variants/mc-variant";
+import { resolveMcVariant } from "../variants/resolve-mc-variant";
 
 type Entries = Record<Entry, [string, string][]>;
 
 export class Vite<TArgs extends Args> {
   private readonly logger = new Logger("KubeJS Plugin/Compiler");
+  private variant: McVariant = defaultMcVariant;
 
   constructor(private readonly args: TArgs) {}
 
@@ -136,6 +140,7 @@ export class Vite<TArgs extends Args> {
   }
 
   private async prepare() {
+    this.variant = await resolveMcVariant(this.root, this.logger);
     await this.writeTypings();
 
     this.logger.info(
@@ -150,9 +155,9 @@ export class Vite<TArgs extends Args> {
       process.exit(1);
     }
 
-    const probeGeneratedDir = resolve(this.root, ".probe");
+    const probeGeneratedDir = resolve(this.root, this.variant.probeDirectory);
     if (!existsSync(probeGeneratedDir)) {
-      console.warn(
+      this.logger.warn(
         `Please install ProbeJS mod and run \`/probejs dump\` command in-game for generating files to autocomplete.`
       );
       return;
@@ -238,7 +243,7 @@ export class Vite<TArgs extends Args> {
         build: {
           emptyOutDir: false,
           minify: "esbuild",
-          target: "es2018",
+          target: this.variant.buildTarget,
           chunkSizeWarningLimit: Infinity
         },
         logLevel: "silent",
@@ -272,8 +277,8 @@ export class Vite<TArgs extends Args> {
       await writeFile(
         resolve(root, `${module}.globals.d.ts`),
         [
-          `/// <reference path="${relativePath}/.probe/${module}/probe-types/packages/index.d.ts" />`,
-          `import "${relativePath}/.probe/${module}/probe-types/global/index.d.ts";`
+          `/// <reference path="${relativePath}/${this.variant.probeDirectory}/${module}/probe-types/packages/index.d.ts" />`,
+          `import "${relativePath}/${this.variant.probeDirectory}/${module}/probe-types/global/index.d.ts";`
         ].join("\n")
       );
     });
