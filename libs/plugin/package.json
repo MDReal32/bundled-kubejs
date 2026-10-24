@@ -31,8 +31,7 @@
   "scripts": {
     "check": "yarn run -T biome check .",
     "dev": "vite-node src/cli.ts",
-    "publish:me": "yarn npm publish --access public",
-    "watch": "vite build --watch"
+    "publish:me": "yarn npm publish --access public"
   },
   "dependencies": {
     "@babel/core": "^7.28.4",
