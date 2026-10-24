@@ -1,4 +1,4 @@
-name: Publish plugin lines
+name: Publish plugin dist-tags
 on:
   workflow_call:
 
@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       lines: ${{ steps.collect.outputs.lines }}
-      latest_line: ${{ steps.collect.outputs.latest_line }}
     steps:
       - uses: actions/checkout@v7
 
@@ -24,7 +23,6 @@ jobs:
           LINES=$(node .github/scripts/list-mc-lines.mjs)
           echo "Discovered plugin lines: ${LINES}"
           echo "lines=${LINES}" >> "$GITHUB_OUTPUT"
-          echo "latest_line=$(node -p 'JSON.parse(process.argv[1]).at(-1)' "${LINES}")" >> "$GITHUB_OUTPUT"
 
   publish:
     needs: prepare
@@ -53,10 +51,9 @@ jobs:
 
       - run: yarn --immutable
 
-      - run: yarn nx run @kubejs/plugin:build-mc-${{ matrix.line }}
+      - run: yarn nx run @kubejs/plugin:build:mc-${{ matrix.line }}
 
       - name: Publish line
         env:
           LINE: ${{ matrix.line }}
-          LATEST: ${{ matrix.line == needs.prepare.outputs.latest_line }}
         run: node .github/scripts/publish-plugin-line.mjs

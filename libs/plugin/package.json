@@ -1,6 +1,6 @@
 {
   "name": "@kubejs/plugin",
-  "version": "1.2.12",
+  "version": "1.2.13",
   "description": "A KubeJS plugin",
   "repository": {
     "type": "git",
@@ -24,19 +24,24 @@
   "main": "npm/mc-1.21/build/kubejs.plugin.js",
   "types": "npm/mc-1.21/build/kubejs.plugin.d.ts",
   "files": [
-    "npm",
-    "package.json",
-    "tsconfig.json"
+    "npm/mc-1.21/build",
+    "npm/mc-1.21/bin",
+    "npm/mc-1.21/types",
+    "tsconfig.base.json"
   ],
   "scripts": {
     "check": "yarn run -T biome check .",
     "dev": "vite-node src/cli.ts",
-    "publish:me": "yarn npm publish --access public"
+    "publish:me": "yarn npm publish --access public",
+    "build:mc-1.18": "vite build --config npm/mc-1.18/vite.config.ts",
+    "build:mc-1.19": "vite build --config npm/mc-1.19/vite.config.ts",
+    "build:mc-1.20": "vite build --config npm/mc-1.20/vite.config.ts",
+    "build:mc-1.21": "vite build --config npm/mc-1.21/vite.config.ts"
   },
   "dependencies": {
     "@babel/core": "^7.29.7",
     "@babel/preset-env": "^7.29.7",
-    "@kubejs/core": "workspace:^",
+    "@kubejs/core": "^2.0.0",
     "@rollup/plugin-babel": "^6.1.0",
     "@swc/core": "1.16.20",
     "@t3-oss/env-core": "^0.13.11",
@@ -58,5 +63,8 @@
     "vite-node": "^3.2.4",
     "vite-plugin-dts": "4.5.4",
     "vite-tsconfig-paths": "^5.1.4"
+  },
+  "bin": {
+    "kubejs": "npm/mc-1.21/bin/cli.js"
   }
 }

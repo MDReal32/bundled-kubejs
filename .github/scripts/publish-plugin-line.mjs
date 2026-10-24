@@ -47,7 +47,6 @@ const publishCopy = (directory, manifest, version, tag) => {
 };
 
 const line = process.env.LINE;
-const isLatest = process.env.LATEST === "true";
 
 if (!line) {
   throw new Error("LINE is required, for example LINE=1.20.");
@@ -59,7 +58,3 @@ const manifest = readJson(resolve(directory, "package.json"));
 const pluginVersion = readJson(resolve("libs/plugin/package.json")).version;
 
 publishCopy(directory, manifest, `${pluginVersion}-mc${line}`, `mc-${line}`);
-
-if (isLatest) {
-  publishCopy(directory, manifest, pluginVersion, "latest");
-}

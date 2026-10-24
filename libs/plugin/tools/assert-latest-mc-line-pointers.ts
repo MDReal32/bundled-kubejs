@@ -6,6 +6,8 @@ import { latestMcLine } from "./latest-mc-line";
 interface PointerManifest {
   main: string;
   types: string;
+  bin: { kubejs: string };
+  files: string[];
   exports: { ".": { types: string; import: string; require: string } };
 }
 
@@ -16,18 +18,23 @@ export const assertLatestMcLinePointers = (packageRoot: string, lines: string[])
   ) as PointerManifest;
   const entry = `npm/mc-${latest}/build/kubejs.plugin.js`;
   const types = `npm/mc-${latest}/build/kubejs.plugin.d.ts`;
+  const bin = `npm/mc-${latest}/bin/cli.js`;
+  const files = [`npm/mc-${latest}/build`, `npm/mc-${latest}/bin`];
   const actual = [
+    manifest.bin.kubejs,
     manifest.main,
     manifest.types,
     manifest.exports["."].types,
     manifest.exports["."].import,
     manifest.exports["."].require
   ];
-  const expected = [entry, types, `./${types}`, `./${entry}`, `./${entry}`];
+  const expected = [bin, entry, types, `./${types}`, `./${entry}`, `./${entry}`];
 
-  if (actual.join() !== expected.join()) {
+  const missingFiles = files.filter(file => !manifest.files.includes(file));
+
+  if (actual.join() !== expected.join() || missingFiles.length > 0) {
     throw new Error(
-      `package.json main, types and exports must point at the latest Minecraft line (${latest}). Expected ${expected.join(", ")} but found ${actual.join(", ")}.`
+      `package.json bin, main, types, exports and files must point at the latest Minecraft line (${latest}). Expected ${expected.join(", ")} and files ${files.join(", ")} but found ${actual.join(", ")} and files ${manifest.files.join(", ")}.`
     );
   }
 };

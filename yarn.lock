@@ -3953,7 +3953,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.7"
     "@babel/preset-env": "npm:^7.29.7"
-    "@kubejs/core": "workspace:^"
+    "@kubejs/core": "npm:^2.0.0"
     "@rollup/plugin-babel": "npm:^6.1.0"
     "@swc/core": "npm:1.16.20"
     "@t3-oss/env-core": "npm:^0.13.11"
@@ -3973,6 +3973,8 @@ __metadata:
     vite-tsconfig-paths: "npm:^5.1.4"
     yargs: "npm:18.2.0"
     zod: "npm:^4.6.7"
+  bin:
+    kubejs: npm/mc-1.21/bin/cli.js
   languageName: unknown
   linkType: soft
 

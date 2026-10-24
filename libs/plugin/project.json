@@ -1,53 +1,25 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "targets": {
-    "build-mc-1.18": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite build",
-        "cwd": "{projectRoot}/npm/mc-1.18"
-      },
+    "build:mc-1.18": {
       "dependsOn": ["^build", "codegen", "typecheck", "check"],
-      "inputs": ["default", "^default"],
-      "outputs": ["{projectRoot}/npm/mc-1.18/build"],
-      "cache": true
+      "outputs": ["{projectRoot}/npm/mc-1.18/build"]
     },
-    "build-mc-1.19": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite build",
-        "cwd": "{projectRoot}/npm/mc-1.19"
-      },
+    "build:mc-1.19": {
       "dependsOn": ["^build", "codegen", "typecheck", "check"],
-      "inputs": ["default", "^default"],
-      "outputs": ["{projectRoot}/npm/mc-1.19/build"],
-      "cache": true
+      "outputs": ["{projectRoot}/npm/mc-1.19/build"]
     },
-    "build-mc-1.20": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite build",
-        "cwd": "{projectRoot}/npm/mc-1.20"
-      },
+    "build:mc-1.20": {
       "dependsOn": ["^build", "codegen", "typecheck", "check"],
-      "inputs": ["default", "^default"],
-      "outputs": ["{projectRoot}/npm/mc-1.20/build"],
-      "cache": true
+      "outputs": ["{projectRoot}/npm/mc-1.20/build"]
     },
-    "build-mc-1.21": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite build",
-        "cwd": "{projectRoot}/npm/mc-1.21"
-      },
+    "build:mc-1.21": {
       "dependsOn": ["^build", "codegen", "typecheck", "check"],
-      "inputs": ["default", "^default"],
-      "outputs": ["{projectRoot}/npm/mc-1.21/build"],
-      "cache": true
+      "outputs": ["{projectRoot}/npm/mc-1.21/build"]
     },
     "build": {
       "executor": "nx:noop",
-      "dependsOn": ["build-mc-1.18", "build-mc-1.19", "build-mc-1.20", "build-mc-1.21"],
+      "dependsOn": ["...", "build:mc-1.18", "build:mc-1.19", "build:mc-1.20", "build:mc-1.21"],
       "outputs": ["{projectRoot}/npm/*/build"]
     }
   }

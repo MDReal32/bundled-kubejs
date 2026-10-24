@@ -10,7 +10,7 @@ on:
       - libs/plugin/project.json
       - libs/plugin/vite.config.ts
       - .github/scripts/**
-      - .github/workflows/publish-plugin.yml
+      - .github/workflows/publish-plugin-dist-tags.yml
       - .github/workflows/publish-to-npm.yml
 
 permissions:
@@ -48,7 +48,7 @@ jobs:
               | .name
               | select(startswith("@kubejs/"))
               | sub("^@kubejs/"; "")
-              | select(startswith("plugin") | not)]'
+              | select(startswith("plugin-mc-") | not)]'
           )
           echo "Discovered packages: ${NAMES}"
           echo "names=${NAMES}" >> "$GITHUB_OUTPUT"
@@ -138,7 +138,15 @@ jobs:
 
       - name: Pack
         if: ${{ steps.decide.outputs.do == 'publish' }}
-        run: yarn workspace @kubejs/${{ matrix.package_name }} pack --out "$RUNNER_TEMP/${{ matrix.package_name }}.tgz"
+        run: |
+          ROOT=${{ steps.info.outputs.root }}
+          OUT="$RUNNER_TEMP/${{ matrix.package_name }}.tgz"
+          if grep -q '"workspace:' "$ROOT/package.json"; then
+            yarn workspace @kubejs/${{ matrix.package_name }} pack --out "$OUT"
+          else
+            (cd "$ROOT" && npm pack --pack-destination "$RUNNER_TEMP" --silent >/dev/null)
+            mv "$RUNNER_TEMP"/kubejs-${{ matrix.package_name }}-*.tgz "$OUT"
+          fi
 
       - name: Publish
         if: ${{ steps.decide.outputs.do == 'publish' }}
@@ -146,9 +154,9 @@ jobs:
           npm --version
           npm publish "$RUNNER_TEMP/${{ matrix.package_name }}.tgz" --access public --provenance
 
-  publish-plugin:
+  publish-plugin-dist-tags:
     needs: publish
     permissions:
       contents: read
       id-token: write
-    uses: ./.github/workflows/publish-plugin.yml
+    uses: ./.github/workflows/publish-plugin-dist-tags.yml
