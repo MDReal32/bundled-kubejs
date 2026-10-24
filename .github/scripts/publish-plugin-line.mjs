@@ -56,9 +56,10 @@ if (!line) {
 const directory = resolve("libs/plugin/npm", `mc-${line}`);
 const manifest = readJson(resolve(directory, "package.json"));
 
-publishCopy(directory, manifest, manifest.version, `mc-${line}`);
+const pluginVersion = readJson(resolve("libs/plugin/package.json")).version;
+
+publishCopy(directory, manifest, `${pluginVersion}-mc${line}`, `mc-${line}`);
 
 if (isLatest) {
-  const pluginVersion = readJson(resolve("libs/plugin/package.json")).version;
   publishCopy(directory, manifest, pluginVersion, "latest");
 }
