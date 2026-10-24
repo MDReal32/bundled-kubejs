@@ -7,10 +7,10 @@
   },
   "type": "module",
   "scripts": {
-    "build": "kubejs build",
+    "build": "node ../../libs/plugin/npm/mc-1.20/bin/cli.js build",
     "check": "biome check .",
-    "package": "kubejs package",
-    "watch": "kubejs build --watch"
+    "package": "node ../../libs/plugin/npm/mc-1.20/bin/cli.js package",
+    "watch": "node ../../libs/plugin/npm/mc-1.20/bin/cli.js build --watch"
   },
   "dependencies": {
     "@kubejs/plugin": "workspace:^"
