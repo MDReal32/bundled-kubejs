@@ -1,0 +1,62 @@
+name: Publish plugin lines
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      lines: ${{ steps.collect.outputs.lines }}
+      latest_line: ${{ steps.collect.outputs.latest_line }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - id: collect
+        run: |
+          LINES=$(node .github/scripts/list-mc-lines.mjs)
+          echo "Discovered plugin lines: ${LINES}"
+          echo "lines=${LINES}" >> "$GITHUB_OUTPUT"
+          echo "latest_line=$(node -p 'JSON.parse(process.argv[1]).at(-1)' "${LINES}")" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: prepare
+    name: plugin ${{ matrix.line }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      max-parallel: 1
+      matrix:
+        line: ${{ fromJSON(needs.prepare.outputs.lines) }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Enable Yarn
+        run: |
+          npm install --global corepack
+          corepack enable
+
+      - run: yarn --immutable
+
+      - run: yarn nx build @kubejs/plugin
+
+      - name: Publish line
+        env:
+          LINE: ${{ matrix.line }}
+          LATEST: ${{ matrix.line == needs.prepare.outputs.latest_line }}
+        run: node .github/scripts/publish-plugin-line.mjs
