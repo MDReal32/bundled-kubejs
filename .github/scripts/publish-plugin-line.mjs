@@ -16,21 +16,34 @@ const npm = (args, options = {}) =>
     ...options
   });
 
-const npmView = (spec, field) => {
-  try {
-    const output = npm(["view", spec, field, "--json"], { stdio: ["ignore", "pipe", "ignore"] });
-    return output.trim() ? JSON.parse(output) : undefined;
-  } catch {
-    return undefined;
-  }
-};
-
 const isPublished = spec => {
   try {
     return npm(["view", spec, "version"], { stdio: ["ignore", "pipe", "ignore"] }).trim() !== "";
   } catch {
     return false;
   }
+};
+
+const readJson = path => JSON.parse(readFileSync(path, "utf-8"));
+
+const publishCopy = (directory, manifest, version, tag) => {
+  if (isPublished(`${publishedName}@${version}`)) {
+    console.log(`SKIP ${tag}: ${publishedName}@${version} is already published`);
+    return;
+  }
+
+  const staging = mkdtempSync(resolve(tmpdir(), "kubejs-plugin-"));
+  cpSync(directory, staging, { recursive: true });
+  writeFileSync(
+    resolve(staging, "package.json"),
+    `${JSON.stringify({ ...manifest, name: publishedName, version }, null, 2)}\n`
+  );
+
+  console.log(`${dryRun ? "DRY RUN" : "PUBLISH"} ${tag}: ${publishedName}@${version}`);
+  npm(
+    ["publish", staging, "--access", "public", "--tag", tag, dryRun ? "--dry-run" : "--provenance"],
+    { stdio: "inherit" }
+  );
 };
 
 const line = process.env.LINE;
@@ -40,35 +53,12 @@ if (!line) {
   throw new Error("LINE is required, for example LINE=1.20.");
 }
 
-const tag = `mc-${line}`;
-const directory = resolve("libs/plugin/npm", tag);
-const manifest = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8"));
-const { version } = manifest;
+const directory = resolve("libs/plugin/npm", `mc-${line}`);
+const manifest = readJson(resolve(directory, "package.json"));
 
-const ci ensureLatestTag = () => {
-  if (dryRun || !isLatest || npmView(publishedName, "dist-tags.latest") === version) {
-    return;
-  }
-  npm(["dist-tag", "add", `${publishedName}@${version}`, "latest"], { stdio: "inherit" });
-};
+publishCopy(directory, manifest, manifest.version, `mc-${line}`);
 
-if (isPublished(`${publishedName}@${version}`)) {
-  console.log(`SKIP ${tag}: ${publishedName}@${version} is already published`);
-  ensureLatestTag();
-  process.exit(0);
+if (isLatest) {
+  const pluginVersion = readJson(resolve("libs/plugin/package.json")).version;
+  publishCopy(directory, manifest, pluginVersion, "latest");
 }
-
-const staging = mkdtempSync(resolve(tmpdir(), "kubejs-plugin-"));
-cpSync(directory, staging, { recursive: true });
-writeFileSync(
-  resolve(staging, "package.json"),
-  JSON.stringify({ ...manifest, name: publishedName }, null, 2) + "\n"
-);
-
-console.log(`${dryRun ? "DRY RUN" : "PUBLISH"} ${tag}: ${publishedName}@${version}`);
-npm(
-  ["publish", staging, "--access", "public", "--tag", tag, dryRun ? "--dry-run" : "--provenance"],
-  { stdio: "inherit" }
-);
-
-ensureLatestTag();
