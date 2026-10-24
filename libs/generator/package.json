@@ -8,7 +8,7 @@
     "directory": "libs/generator"
   },
   "type": "module",
-  "main": "build/main.js",
+  "main": "build/kubejs.generator.js",
   "bin": {
     "kubejs-generator": "bin/generator.js"
   },

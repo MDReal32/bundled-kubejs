@@ -14,7 +14,7 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       name: "KubeJS/Core",
-      entry: { main: "src/main.ts", dialog: "src/dialog.ts" },
+      entry: { "kubejs.core": "src/main.ts", "kubejs.core.dialog": "src/dialog.ts" },
       formats: ["es"]
     },
     sourcemap: true

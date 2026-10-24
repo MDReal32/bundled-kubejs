@@ -6,7 +6,11 @@ export default defineConfig({
   build: {
     ssr: true,
     outDir: "build",
-    lib: { name: "KubeJS/Generator", entry: { main: "src/main.ts" }, formats: ["es"] },
+    lib: {
+      name: "KubeJS/Generator",
+      entry: { "kubejs.generator": "src/main.ts" },
+      formats: ["es"]
+    },
     rollupOptions: { external: ["@kubejs/core"] },
     target: "ESNext",
     minify: false,

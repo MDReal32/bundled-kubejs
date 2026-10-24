@@ -9,11 +9,11 @@
   },
   "type": "module",
   "exports": {
-    ".": "./build/main.js",
-    "./dialog": "./build/dialog.js"
+    ".": "./build/kubejs.core.js",
+    "./dialog": "./build/kubejs.core.dialog.js"
   },
-  "main": "build/main.js",
-  "types": "build/main.d.ts",
+  "main": "build/kubejs.core.js",
+  "types": "build/kubejs.core.d.ts",
   "files": [
     "build",
     "package.json",

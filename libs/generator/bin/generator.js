@@ -1,1 +1,1 @@
-import "../build/main.js";
+import "../build/kubejs.generator.js";
