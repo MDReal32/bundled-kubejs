@@ -10,7 +10,8 @@
   "workspaces": [
     "apps/*",
     "libs/*",
-    "samples/*"
+    "samples/*",
+    "libs/plugin/npm/*"
   ],
   "scripts": {
     "check": "biome check",
@@ -30,17 +31,17 @@
     "lint": "biome lint"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.15",
-    "@nestjs/cli": "^11.0.10",
-    "@nx/vite": "21.6.3",
-    "@nx/web": "21.6.3",
-    "@types/node": "^24.7.0",
-    "@vitest/ui": "^3.0.0",
-    "nx": "21.6.3",
+    "@biomejs/biome": "2.6.2",
+    "@nestjs/cli": "^11.0.24",
+    "@nx/vite": "21.6.11",
+    "@nx/web": "21.6.11",
+    "@types/node": "^24.19.2",
+    "@vitest/ui": "^3.2.7",
+    "nx": "21.6.11",
     "typescript": "^5.9.3",
-    "vite": "^7.0.0",
+    "vite": "^7.3.7",
     "vite-node": "^3.2.4",
-    "vitest": "^3.0.0"
+    "vitest": "^3.2.7"
   },
   "packageManager": "yarn@4.18.1"
 }

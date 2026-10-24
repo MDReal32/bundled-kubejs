@@ -28,13 +28,13 @@
   },
   "dependencies": {
     "archiver": "^7.0.1",
-    "electron": "^38.2.1",
+    "electron": "^38.8.6",
     "temp-dir": "^3.0.0"
   },
   "devDependencies": {
     "nestbridge": "^2.4.1",
     "typescript": "5.9.3",
-    "vite": "7.1.9",
+    "vite": "7.3.7",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
