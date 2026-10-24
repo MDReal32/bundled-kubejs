@@ -12,8 +12,8 @@ export const assertLinePackages = (packageRoot: string, lines: string[]) => {
     const manifestPath = resolve(packageRoot, "npm", `mc-${line}`, "package.json");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf-8")) as LineManifest;
 
-    if (manifest.name !== "@kubejs/plugin" || manifest.mcLine !== line) {
-      throw new Error(`${manifestPath} must be @kubejs/plugin with mcLine "${line}".`);
+    if (manifest.name !== `@kubejs/plugin-mc-${line}` || manifest.mcLine !== line) {
+      throw new Error(`${manifestPath} must be @kubejs/plugin-mc-${line} with mcLine "${line}".`);
     }
 
     if (manifest.publishConfig.tag !== `mc-${line}`) {

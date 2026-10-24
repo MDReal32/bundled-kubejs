@@ -1,7 +1,9 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
+const publishedName = "@kubejs/plugin";
 const dryRun = process.env.DRY_RUN === "true";
 const isWindows = process.platform === "win32";
 
@@ -31,19 +33,27 @@ if (!line) {
 
 const tag = `mc-${line}`;
 const directory = resolve("libs/plugin/npm", tag);
-const { name, version } = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8"));
+const manifest = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8"));
+const { version } = manifest;
 
-if (isPublished(`${name}@${version}`)) {
-  console.log(`SKIP ${tag}: ${name}@${version} is already published`);
+if (isPublished(`${publishedName}@${version}`)) {
+  console.log(`SKIP ${tag}: ${publishedName}@${version} is already published`);
   process.exit(0);
 }
 
-console.log(`${dryRun ? "DRY RUN" : "PUBLISH"} ${tag}: ${name}@${version}`);
+const staging = mkdtempSync(resolve(tmpdir(), "kubejs-plugin-"));
+cpSync(directory, staging, { recursive: true });
+writeFileSync(
+  resolve(staging, "package.json"),
+  JSON.stringify({ ...manifest, name: publishedName }, null, 2) + "\n"
+);
+
+console.log(`${dryRun ? "DRY RUN" : "PUBLISH"} ${tag}: ${publishedName}@${version}`);
 npm(
-  ["publish", directory, "--access", "public", "--tag", tag, dryRun ? "--dry-run" : "--provenance"],
+  ["publish", staging, "--access", "public", "--tag", tag, dryRun ? "--dry-run" : "--provenance"],
   { stdio: "inherit" }
 );
 
 if (!dryRun && isLatest) {
-  npm(["dist-tag", "add", `${name}@${version}`, "latest"], { stdio: "inherit" });
+  npm(["dist-tag", "add", `${publishedName}@${version}`, "latest"], { stdio: "inherit" });
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@kubejs/plugin",
+  "name": "@kubejs/plugin-mc-1.18",
   "version": "1.2.11-mc1.18",
   "description": "A KubeJS plugin",
   "repository": {
@@ -29,19 +29,19 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/preset-env": "^7.28.3",
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
     "@kubejs/core": "^2.0.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@swc/core": "1.13.5",
-    "@t3-oss/env-core": "^0.13.8",
+    "@rollup/plugin-babel": "^6.1.0",
+    "@swc/core": "1.16.20",
+    "@t3-oss/env-core": "^0.13.11",
     "chokidar": "^4.0.3",
-    "glob": "^11.0.3",
-    "lodash": "4.17.21",
-    "magic-string": "^0.30.19",
-    "vite": "7.1.9",
-    "yargs": "18.0.0",
-    "zod": "^4.1.12"
+    "glob": "^11.1.0",
+    "lodash": "4.18.1",
+    "magic-string": "^0.30.21",
+    "vite": "7.3.7",
+    "yargs": "18.2.0",
+    "zod": "^4.6.7"
   },
   "publishConfig": {
     "access": "public",
