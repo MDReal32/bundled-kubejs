@@ -16,6 +16,15 @@ const npm = (args, options = {}) =>
     ...options
   });
 
+const npmView = (spec, field) => {
+  try {
+    const output = npm(["view", spec, field, "--json"], { stdio: ["ignore", "pipe", "ignore"] });
+    return output.trim() ? JSON.parse(output) : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const isPublished = spec => {
   try {
     return npm(["view", spec, "version"], { stdio: ["ignore", "pipe", "ignore"] }).trim() !== "";
@@ -36,8 +45,16 @@ const directory = resolve("libs/plugin/npm", tag);
 const manifest = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8"));
 const { version } = manifest;
 
+const ci ensureLatestTag = () => {
+  if (dryRun || !isLatest || npmView(publishedName, "dist-tags.latest") === version) {
+    return;
+  }
+  npm(["dist-tag", "add", `${publishedName}@${version}`, "latest"], { stdio: "inherit" });
+};
+
 if (isPublished(`${publishedName}@${version}`)) {
   console.log(`SKIP ${tag}: ${publishedName}@${version} is already published`);
+  ensureLatestTag();
   process.exit(0);
 }
 
@@ -54,6 +71,4 @@ npm(
   { stdio: "inherit" }
 );
 
-if (!dryRun && isLatest) {
-  npm(["dist-tag", "add", `${publishedName}@${version}`, "latest"], { stdio: "inherit" });
-}
+ensureLatestTag();
