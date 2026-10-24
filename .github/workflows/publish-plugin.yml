@@ -34,7 +34,7 @@ jobs:
       contents: read
       id-token: write
     strategy:
-      max-parallel: 1
+      fail-fast: false
       matrix:
         line: ${{ fromJSON(needs.prepare.outputs.lines) }}
 
