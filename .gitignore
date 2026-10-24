@@ -276,3 +276,4 @@ vitest.config.*.timestamp*
 
 # nestbridge
 .nestbridge
+libs/plugin/npm/*/build

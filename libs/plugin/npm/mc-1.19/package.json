@@ -1,0 +1,50 @@
+{
+  "name": "@kubejs/plugin",
+  "version": "1.2.11-mc1.19",
+  "description": "A KubeJS plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MDReal32/bundled-kubejs.git",
+    "directory": "libs/plugin/npm/mc-1.19"
+  },
+  "type": "module",
+  "mcLine": "1.19",
+  "main": "build/kubejs.plugin.js",
+  "types": "build/kubejs.plugin.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/kubejs.plugin.d.ts",
+      "import": "./build/kubejs.plugin.js",
+      "require": "./build/kubejs.plugin.js"
+    }
+  },
+  "bin": {
+    "kubejs": "bin/cli.js"
+  },
+  "files": [
+    "build/kubejs.plugin*",
+    "bin",
+    "types",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@kubejs/core": "^2.0.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@swc/core": "1.13.5",
+    "@t3-oss/env-core": "^0.13.8",
+    "chokidar": "^4.0.3",
+    "glob": "^11.0.3",
+    "lodash": "4.17.21",
+    "magic-string": "^0.30.19",
+    "vite": "7.1.9",
+    "yargs": "18.0.0",
+    "zod": "^4.1.12"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "mc-1.19"
+  }
+}

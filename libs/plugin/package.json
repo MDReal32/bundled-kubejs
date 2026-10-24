@@ -10,9 +10,9 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./build/main.d.ts",
-      "import": "./build/main.js",
-      "require": "./build/main.js"
+      "types": "./npm/mc-1.21/build/kubejs.plugin.d.ts",
+      "import": "./npm/mc-1.21/build/kubejs.plugin.js",
+      "require": "./npm/mc-1.21/build/kubejs.plugin.js"
     },
     "./tsconfig": {
       "default": "./tsconfig.base.json"
@@ -21,17 +21,10 @@
       "default": "./tsconfig.base.json"
     }
   },
-  "main": "build/main.js",
-  "types": "build/main.d.ts",
-  "bin": {
-    "kubejs": "bin/cli.js"
-  },
+  "main": "npm/mc-1.21/build/kubejs.plugin.js",
+  "types": "npm/mc-1.21/build/kubejs.plugin.d.ts",
   "files": [
-    "build",
-    "types",
-    "bin",
-    "README.md",
-    "LICENSE",
+    "npm",
     "package.json",
     "tsconfig.json"
   ],

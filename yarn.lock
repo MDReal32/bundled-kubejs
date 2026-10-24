@@ -2391,8 +2391,6 @@ __metadata:
     vite-tsconfig-paths: "npm:^5.1.4"
     yargs: "npm:18.0.0"
     zod: "npm:^4.1.12"
-  bin:
-    kubejs: bin/cli.js
   languageName: unknown
   linkType: soft
 
