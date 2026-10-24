@@ -48,7 +48,7 @@ jobs:
               | .name
               | select(startswith("@kubejs/"))
               | sub("^@kubejs/"; "")
-              | select(. != "plugin")]'
+              | select(startswith("plugin") | not)]'
           )
           echo "Discovered packages: ${NAMES}"
           echo "names=${NAMES}" >> "$GITHUB_OUTPUT"
@@ -98,13 +98,13 @@ jobs:
           NAME=${{ steps.info.outputs.name }}
           VERSION=${{ steps.info.outputs.version }}
           ROOT=${{ steps.info.outputs.root }}
-  
+
           if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
             echo "published=true" >> $GITHUB_OUTPUT
           else
             echo "published=false" >> $GITHUB_OUTPUT
           fi
-  
+
           git fetch --tags --quiet || true
           LAST=$(git tag -l "$NAME@*" | sort -V | tail -n 1)
           if [ -n "$LAST" ] && git diff --quiet "$LAST" -- "$ROOT"; then
