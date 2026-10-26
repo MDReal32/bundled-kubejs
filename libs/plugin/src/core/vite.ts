@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, extname, relative, resolve } from "node:path";
 import * as process from "node:process";
+import { pathToFileURL } from "node:url";
 
 import chokidar from "chokidar";
 import { glob } from "glob";
@@ -30,11 +31,6 @@ export class Vite<TArgs extends Args> {
 
   private get root() {
     return this.args.root!;
-  }
-
-  private get isWindows() {
-    // it will return 'win32' even on win64 systems
-    return process.platform === "win32";
   }
 
   async build() {
@@ -178,19 +174,19 @@ export class Vite<TArgs extends Args> {
         const { build } = await import("vite");
 
         const builtFileName = `${viteConfigFile}.${Date.now()}`;
-        const viteConfigUrl = this.isWindows ? `file://${viteConfigFile}` : viteConfigFile;
         await build({
+          configFile: false,
           build: {
             outDir: dirname(viteConfigFile),
             ssr: true,
-            lib: { entry: { [basename(builtFileName)]: viteConfigUrl }, formats: ["es"] }
+            lib: { entry: { [basename(builtFileName)]: viteConfigFile }, formats: ["es"] }
           },
           logLevel: "silent"
         });
         compiledConfigFileName = `${builtFileName}.js`;
       }
 
-      const userDefinedConfig = await import(compiledConfigFileName);
+      const userDefinedConfig = await import(pathToFileURL(compiledConfigFileName).href);
       viteConfigFile.endsWith(".ts") && (await rm(compiledConfigFileName, { force: true }));
       this.logger.info(`Successfully compiled vite config file.`);
       return userDefinedConfig.default;
